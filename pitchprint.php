@@ -4,12 +4,12 @@
 		* Plugin URI: https://pitchprint.com
 		* Description: A beautiful web based print customization app for your online store. Integrates with WooCommerce.
 		* Author: PitchPrint
-		* Version: 10.0.4
+		* Version: 10.0.11
 		* Author URI: https://pitchprint.com
 		* Requires at least: 3.8
-		* Tested up to: 5.4
+		* Tested up to: 5.7
         * WC requires at least: 3.0.0
-        * WC tested up to: 4.3.2
+        * WC tested up to: 5.6.0
 		*
 		* @package PitchPrint
 		* @category Core
@@ -17,8 +17,6 @@
         */
 
 	load_plugin_textdomain('PitchPrint', false, basename( dirname( __FILE__ ) ) . '/languages/' );
-
-	include('utils/browser.php');
 	
 	function end_session() {
 		if(session_id()) session_destroy();
@@ -29,7 +27,7 @@
 
 	class PitchPrint {
 
-		public $version = '10.0.3';
+		public $version = '10.0.6';
 
 		protected $editButtonsAdded = false;
 		
@@ -45,12 +43,8 @@
 		private function define_constants() {
 			define('PP_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
 			define('PP_IOBASE', 'https://pitchprint.io');
-			$browserValid = true; //browserValid();
-			if ($browserValid) {
-				define('PP_CLIENT_JS', 'https://pitchprint.io/rsc/js/client.js');
-			} else {
-				define('PP_CLIENT_JS', 'https://pitchprint.io/rsc/js/noes6.js');
-			}
+			define('PP_CLIENT_JS', 'https://pitchprint.io/rsc/js/client.js');
+			define('PP_NOES6_JS', 'https://pitchprint.io/rsc/js/noes6.js');
 			define('PP_ADMIN_JS', 'https://pitchprint.io/rsc/js/a.wp.js');
 			define('PPADMIN_DEF', "var PPADMIN = window.PPADMIN; if (typeof PPADMIN === 'undefined') window.PPADMIN = PPADMIN = { version: '9.0.0', readyFncs: [] };");
 		}
@@ -203,6 +197,7 @@
 		
 		public function pp_order_after_table() {
 			wp_enqueue_script('pitchprint_class', PP_CLIENT_JS);
+			wp_enqueue_script('pitchprint_class_noes6', PP_NOES6_JS);
 			
 			wc_enqueue_js("
 				ajaxsearch = undefined;
@@ -241,6 +236,7 @@
 		public function pp_my_recent_order() {
 			global $post, $woocommerce;
 			wp_enqueue_script('pitchprint_class', PP_CLIENT_JS);
+			wp_enqueue_script('pitchprint_class_noes6', PP_NOES6_JS);
 			wp_enqueue_script('prettyPhoto', $woocommerce->plugin_url() . '/assets/js/prettyPhoto/jquery.prettyPhoto.min.js', array( 'jquery' ), $woocommerce->version, true );
 			wp_enqueue_script('prettyPhoto-init', $woocommerce->plugin_url() . '/assets/js/prettyPhoto/jquery.prettyPhoto.init.min.js', array( 'jquery' ), $woocommerce->version, true );
 			wp_enqueue_style('woocommerce_prettyPhoto_css', $woocommerce->plugin_url() . '/assets/css/prettyPhoto.css' );
@@ -266,6 +262,7 @@
 		public function pp_get_cart_action() {
 			global $post, $woocommerce;
 			wp_enqueue_script('pitchprint_class', PP_CLIENT_JS);
+			wp_enqueue_script('pitchprint_class_noes6', PP_NOES6_JS);
 			wc_enqueue_js("
 				ajaxsearch = undefined;
 				(function(_doc) {
@@ -308,6 +305,7 @@
 		}
 
 		public function pp_get_cart_mod( $item_data, $cart_item ) {
+			if (!is_page('cart')) return $item_data;
 			if (!empty($cart_item['_w2p_set_option'])) {
 				$val = $cart_item['_w2p_set_option'];
 				$itm = json_decode(rawurldecode($val), true);
@@ -372,7 +370,8 @@
 					
 			} else {
 				$this->register_session();
-				$_projects =  $_SESSION['pp_projects'];
+				if (isset( $_SESSION['pp_projects']))
+					$_projects =  $_SESSION['pp_projects'];
 			}
 			return $_projects;
 		}
@@ -441,7 +440,8 @@
 					$pp_mode = 'edit';
 					$pp_project_id = $opt_['projectId'];
 					$pp_previews = $opt_['numPages'];
-					if (isset($opt_['designId']) && !empty($opt_['designId'])) $pp_design_id = $opt_['designId'];				}
+					if (!isset($opt_['projectId']) && !empty($opt_['projectId'])) $pp_design_id = $opt_['projectId'];
+				}
 			}
 
 			$userData = '';
@@ -477,6 +477,8 @@
 					}";
 			}
 			
+			// $miniMode = $pp_set_option[0] === "3d8f3899904ef2392795c681091600d0" ? '\'mini\'' : 'undefined';
+
 			wc_enqueue_js("
 				ajaxsearch = undefined;
 				(function(_doc) {
@@ -513,7 +515,10 @@
 			global $post, $product;
 			if (empty($post)) return;
 			$pp_set_option = get_post_meta($post->ID, '_w2p_set_option', true);
-			if (!empty($pp_set_option)) wp_enqueue_script('pitchprint_class', PP_CLIENT_JS);
+			if (!empty($pp_set_option)) {
+				wp_enqueue_script('pitchprint_class', PP_CLIENT_JS);
+				wp_enqueue_script('pitchprint_class_noes6', PP_NOES6_JS);
+			}
 		}
 
 		public function ppa_write_panel_save( $post_id ) {

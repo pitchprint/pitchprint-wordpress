@@ -2,8 +2,8 @@
 Contributors: flexcubed
 Tags: customizer, photo album, print shop, web2print, gift print, diy print, product customizer, web-to-print, print software, print solution, HTML5 WYSIWYG, t-shirt designer, wysiwyg print editor, business card
 Requires at least: 3.8
-Tested up to: 5.4
-Stable tag: 10.0.4
+Tested up to: 5.8
+Stable tag: 10.0.11
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -97,6 +97,24 @@ Check out our [website for more details](https://pitchprint.com)
 4. Admin settings.
 
 == Changelog ==
+
+== 10.0.11 =
+Fixed an issue with WC 5.6
+
+== 10.0.9 =
+Checking array offset exists on uploadhandler
+
+== 10.0.8 =
+Only showing the duplicate design button on the cart page.
+
+== 10.0.7 =
+Tested up to WP 5.7
+
+== 10.0.6 =
+Displaying warning message to switch browser if IE browser is detected.
+
+== 10.0.5 =
+Displaying warning message to switch browser if IE browser is detected.
 
 == 10.0.4 = 
 Minor bug fix relating to session and cookies
