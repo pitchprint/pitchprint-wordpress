@@ -582,8 +582,13 @@
 		}
 
 		function ppa_add_settings_link($links) {
-			$settings_link = array('<a href="admin.php?page=pitchprint">' . __( 'Settings' ) . '</a>');
-			return array_merge($settings_link, $links);
+			$settings_link = array(
+				'<a href="/wp-admin/admin.php?page=pitchprint" target="_blank" rel="noopener">Settings</a>',
+				'<a href="https://docs.pitchprint.com/"  target="_blank" rel="noopener">Dokumentation</a>',
+				'<a href="https://admin.pitchprint.com/dashboard" target="_blank" rel="noopener">Admin Dashboard & Support</a>'
+			);
+			$actions = array_merge( $links, $settings_link );
+			return $actions;
 		}
 
 		private function pp_fetch_credentials() {
