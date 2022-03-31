@@ -3,7 +3,7 @@ Contributors: flexcubed
 Tags: customizer, photo album, print shop, web2print, gift print, diy print, product customizer, web-to-print, print software, print solution, HTML5 WYSIWYG, t-shirt designer, wysiwyg print editor, business card
 Requires at least: 3.8
 Tested up to: 5.8
-Stable tag: 10.0.11
+Stable tag: 10.0.17
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -97,6 +97,20 @@ Check out our [website for more details](https://pitchprint.com)
 4. Admin settings.
 
 == Changelog ==
+== 10.0.17 =
+Category customization added.
+
+== 10.0.16 =
+Minor update - initiation.
+
+== 10.0.14 =
+Improved saveproject - permissions.
+
+== 10.0.13 =
+You can now allow the PitchPrint design preview to act as a product image.
+
+== 10.0.12 =
+Made uploaded file names unqiue
 
 == 10.0.11 =
 Fixed an issue with WC 5.6

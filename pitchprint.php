@@ -4,7 +4,7 @@
 		* Plugin URI: https://pitchprint.com
 		* Description: A beautiful web based print customization app for your online store. Integrates with WooCommerce.
 		* Author: PitchPrint
-		* Version: 10.0.11
+		* Version: 10.0.17
 		* Author URI: https://pitchprint.com
 		* Requires at least: 3.8
 		* Tested up to: 5.7
@@ -27,7 +27,7 @@
 
 	class PitchPrint {
 
-		public $version = '10.0.6';
+		public $version = '10.0.17';
 
 		protected $editButtonsAdded = false;
 		
@@ -44,6 +44,7 @@
 			define('PP_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
 			define('PP_IOBASE', 'https://pitchprint.io');
 			define('PP_CLIENT_JS', 'https://pitchprint.io/rsc/js/client.js');
+			define('PP_CAT_CLIENT_JS', 'https://pitchprint.io/rsc/js/cat-client.js');
 			define('PP_NOES6_JS', 'https://pitchprint.io/rsc/js/noes6.js');
 			define('PP_ADMIN_JS', 'https://pitchprint.io/rsc/js/a.wp.js');
 			define('PPADMIN_DEF', "var PPADMIN = window.PPADMIN; if (typeof PPADMIN === 'undefined') window.PPADMIN = PPADMIN = { version: '9.0.0', readyFncs: [] };");
@@ -68,6 +69,7 @@
 				add_action('woocommerce_before_add_to_cart_button', array($this, 'add_pp_edit_button'));
 				add_action('woocommerce_after_cart', array($this, 'pp_get_cart_action'));
 				add_action('woocommerce_after_checkout_form', array($this, 'pp_get_cart_action'));
+				add_action('woocommerce_before_shop_loop', array($this, 'add_cat_script'));
 				//add_action('woocommerce_thankyou', array($this,'pp_check_webhook_status'));
 			} else if ($this->request_type('admin')) {
 				add_action('admin_menu', array($this, 'ppa_actions'));
@@ -79,8 +81,11 @@
 			}
 			add_action('woocommerce_order_status_changed', array($this,'pp_order_status_completed'),10,3);
 		}
-
-		function pp_check_webhook_status($order_id){
+		public function add_cat_script() {
+			if ( get_option('ppa_cat_customize') == 'on' )
+				wp_enqueue_script('pitchprint_cat_client', PP_CAT_CLIENT_JS);
+		}
+		function pp_check_webhook_status($order_id) {
 			$order = wc_get_order( $order_id );
 			if($order->get_data()['status'] === 'processing') pp_order_status_completed($order_id, null, 'processing');
 		}
@@ -206,7 +211,7 @@
 						userId: '" . (get_current_user_id() === 0 ? 'guest' : get_current_user_id())  . "',
 						langCode: '" . substr(get_bloginfo('language'), 0, 2) . "',
 						mode: 'edit',
-						pluginRoot: '" . plugins_url('/', __FILE__) . "',
+						pluginRoot: '" . site_url() . "/pitchprint/',
 						apiKey: '" . get_option('ppa_api_key') . "',
 						client: 'wp',
 						afterValidation: '_sortCart'
@@ -250,7 +255,7 @@
 						userId: '" . (get_current_user_id() === 0 ? 'guest' : get_current_user_id())  . "',
 						langCode: '" . substr(get_bloginfo('language'), 0, 2) . "',
 						mode: 'edit',
-						pluginRoot: '" . plugins_url('/', __FILE__) . "',
+						pluginRoot: '" . site_url() . "/pitchprint/',
 						apiKey: '" . get_option('ppa_api_key') . "',
 						client: 'wp',
 						afterValidation: '_fetchProjects',
@@ -271,7 +276,7 @@
 						userId: '" . (get_current_user_id() === 0 ? 'guest' : get_current_user_id())  . "',
 						langCode: '" . substr(get_bloginfo('language'), 0, 2) . "',
 						mode: 'edit',
-						pluginRoot: '" . plugins_url('/', __FILE__) . "',
+						pluginRoot: '" . site_url() . "/pitchprint/',
 						apiKey: '" . get_option('ppa_api_key') . "',
 						client: 'wp',
 						afterValidation: '_sortCart',
@@ -389,6 +394,7 @@
 			$pp_display_option = get_post_meta( $post->ID, '_w2p_display_option', true );
 			$pp_customization_required = get_post_meta( $post->ID, '_w2p_required_option', true );
 			$pp_pdf_download = get_post_meta( $post->ID, '_w2p_pdf_download_option', true );
+			$pp_use_design_preview = get_post_meta( $post->ID, '_w2p_use_design_preview_option', true );
 			// var_dump($pp_customization_required);die();
 			$pp_customization_required = 
 				( $pp_customization_required === 'undefined' || 
@@ -396,6 +402,9 @@
 			$pp_pdf_download = 
 				( $pp_pdf_download === 'undefined' || 
 				( isset($pp_pdf_download) && strlen($pp_pdf_download) == 0 ) ) ? 'undefined' : ( $pp_pdf_download ? 1: 0 );
+			$pp_use_design_preview = 
+				( $pp_use_design_preview === 'undefined' || 
+				( isset($pp_use_design_preview) && strlen($pp_use_design_preview) == 0 ) ) ? 'undefined' : ( $pp_use_design_preview ? 1: 0 );
 			
 			if (strpos($pp_set_option, ':') === false) $pp_set_option = $pp_set_option . ':0';
 			$pp_set_option = explode(':', $pp_set_option);
@@ -487,6 +496,7 @@
 						displayMode: '{$pp_display_option}',
 						customizationRequired: ". $pp_customization_required.",
 						pdfDownload: ". $pp_pdf_download .",
+						useDesignPrevAsProdImage: " . $pp_use_design_preview. ",
 						uploadUrl: '" . plugins_url('uploader/', __FILE__) . "',
 						userId: '{$pp_uid}',
 						langCode: '" . substr(get_bloginfo('language'), 0, 2) . "',
@@ -496,7 +506,7 @@
 						mode: '{$pp_mode}',
 						createButtons: true,
 						projectId: '{$pp_project_id}',
-						pluginRoot: '" . plugins_url('/', __FILE__) . "',
+						pluginRoot: '" . site_url() . "/pitchprint/',
 						apiKey: '" . get_option('ppa_api_key') . "',
 						client: 'wp',
 						product: {
@@ -543,6 +553,13 @@
 			if ( ! add_post_meta( $post_id, '_w2p_pdf_download_option', $downlNVal, true ) ) { 
 			  update_post_meta( $post_id, '_w2p_pdf_download_option', $downlNVal);
 			}
+			
+			$useDesignPrevCVal = get_post_meta($post_id, '_w2p_use_design_preview_option', true);
+			$useDesignPrevCValNVal = $_POST['ppa_pick_use_design_preview'];
+			if($useDesignPrevCVal !== NULL && $useDesignPrevCVal !== 'checked' && strlen($useDesignPrevCValNVal) == 0 )
+				$useDesignPrevCValNVal = 'undefined';
+			if ( ! add_post_meta( $post_id, '_w2p_use_design_preview_option', $useDesignPrevCValNVal, true ) )  
+			  update_post_meta( $post_id, '_w2p_use_design_preview_option', $useDesignPrevCValNVal);
 		}
 
 		public function ppa_admin_page() {
@@ -566,8 +583,10 @@
 			add_settings_section('ppa_settings_section', 'PitchPrint Settings', array($this, 'ppa_create_settings'), 'pitchprint');
 			add_settings_field('ppa_api_key', 'Api Key', array($this, 'ppa_api_key'), 'pitchprint', 'ppa_settings_section', array());
 			add_settings_field('ppa_secret_key', 'Secret Key', array($this, 'ppa_secret_key'), 'pitchprint', 'ppa_settings_section', array());
+			add_settings_field('ppa_cat_customize', 'Category Customization', array($this, 'ppa_cat_customize'), 'pitchprint', 'ppa_settings_section', array());
 			register_setting('pitchprint', 'ppa_api_key');
 			register_setting('pitchprint', 'ppa_secret_key');
+			register_setting('pitchprint', 'ppa_cat_customize');
 		}
 
 		public function ppa_api_key() {
@@ -576,9 +595,12 @@
 		public function ppa_secret_key() {
 			echo '<input class="regular-text" id="ppa_secret_key" name="ppa_secret_key" type="text" value="' . get_option('ppa_secret_key') . '" />';
 		}
-
+		public function ppa_cat_customize() {
+			echo '<input class="regular-text" id="ppa_cat_customize" name="ppa_cat_customize" type="checkbox" '. ( get_option('ppa_cat_customize') == 'on' ? 'checked' : '' ) . ' />';
+		}
+		
 		public function ppa_create_settings() {
-			echo '<p>' . __("You can generate your api and secret keys from the <a target=\"_blank\" href=\"https://admin.pitchprint.io/domains\">PitchPrint domains page</a>", "PitchPrint") . '</p>';
+			echo '<p>' . __("You can generate your api and secret keys from the <a target=\"_blank\" href=\"https://admin.pitchprint.com/domains\">PitchPrint domains page</a>", "PitchPrint") . '</p>';
 		}
 
 		function ppa_add_settings_link($links) {
@@ -616,6 +638,7 @@
 			
 			$ppa_customization_required = get_post_meta($post->ID, '_w2p_required_option', true);
 			$ppa_pdf_download = get_post_meta($post->ID, '_w2p_pdf_download_option', true);
+			$ppa_use_design_preview = get_post_meta($post->ID, '_w2p_use_design_preview_option', true);
 
 			$ppa_upload_selected_option = '';
 			$ppa_display_selected_option = get_post_meta($post->ID, '_w2p_display_option', true);
@@ -669,6 +692,14 @@
 				'description' 	=> '&#8678; ' . __("Check this to allow PDF download for this product", 'PitchPrint')
 			) );
 			
+			woocommerce_wp_checkbox( array(
+				'id'            => 'ppa_pick_use_design_preview',
+				'value'		    => $ppa_use_design_preview,
+				'label'         => '',
+				'cbvalue'		=> 'checked',
+				'description' 	=> '&#8678; ' . __("Check this to show the PitchPrint design preview if this product has no product image", 'PitchPrint')
+			) );
+			
 			$cred = $this->pp_fetch_credentials();
 			wc_enqueue_js( PPADMIN_DEF . "
 				PPADMIN.vars = {
@@ -698,6 +729,28 @@
 	$PitchPrint = new PitchPrint();
 
 	function pp_install() {
+		// Copy getProdDesigns.php to root so it can be accessble externally
+		$localProdDesignsScript = ABSPATH.'wp-content/plugins/pitchprint/app/getProdDesigns.php';
+		$rootProdDesignsScript = ABSPATH.'pitchprint/app/getProdDesigns.php';
+		if (!file_exists($rootProdDesignsScript)){
+			if (!file_exists(ABSPATH.'pitchprint'))
+				mkdir(ABSPATH.'pitchprint');
+			if (!file_exists(ABSPATH.'pitchprint/app'))
+				mkdir(ABSPATH.'pitchprint/app');
+			copy($localProdDesignsScript, $rootProdDesignsScript);
+		}
+
+		// Copy saveproject.php to root so it can be accessble externally
+		$localSaveProjectScript = ABSPATH.'wp-content/plugins/pitchprint/app/saveproject.php';
+		$rootSaveProjectScript = ABSPATH.'pitchprint/app/saveproject.php';
+		if (!file_exists($rootSaveProjectScript)){
+			if (!file_exists(ABSPATH.'pitchprint'))
+				mkdir(ABSPATH.'pitchprint');
+			if (!file_exists(ABSPATH.'pitchprint/app'))
+				mkdir(ABSPATH.'pitchprint/app');
+			copy($localSaveProjectScript, $rootSaveProjectScript);
+		}
+		
 		global $PitchPrint;
 		$pp_version = get_option('pitchprint_version');
 		
@@ -733,6 +786,7 @@
 	
 	function pitchprint_doUpdate() {
 		global $PitchPrint;
+		
 		if ( get_site_option('pitchprint_version') != $PitchPrint->version )	
 			pp_install();
 	}

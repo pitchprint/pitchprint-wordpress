@@ -1,6 +1,6 @@
 <?php
 	//YOU CAN HANDLE SESSIONING HERE....
-	require_once('../../../../wp-load.php');
+	require_once('../../wp-load.php');
 	
 	function clearProjects($productId) {
 		global $wpdb;
