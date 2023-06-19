@@ -36,7 +36,7 @@ jobs:
           mkdir pp-wp-svn
           svn co https://plugins.svn.wordpress.org/pitchprint pp-wp-svn
           cp pitchprint-wordpress/* pp-wp-svn/trunk/ -r
-          cd ../pp-wp-svn
+          cd pp-wp-svn
           VERSION="$(echo $TAG | cut -c2-)"
           svn cp trunk/ tags/$VERSION
           svn ci -m "$COMMIT_MSG" --username flexcubed --password $SVN_SECRET
