@@ -25,7 +25,7 @@ jobs:
       - name: Merge latest changes into the SVN repo
         run: |
           cd ..
-          cp pitchprint-wordpress/* pp-wp-svn/trunk/
+          cp pitchprint-wordpress/* pp-wp-svn/trunk/ -r
 
       - name: Release to SVN
         env:
