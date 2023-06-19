@@ -30,7 +30,7 @@ jobs:
           CHANGELOG=$(cat CHANGELOG.txt)
           sed -i "s/Version.*/Version: $VERSION/" pitchprint.php
           sed -i "s/Stabe tag:.*/Stable tag: $VERSION/" readme.txt
-          sed -i "s/== Changelog ==.*/== Changelog ==\n\n== $VERSION =\n$CHANGELOG/"
+          sed -i "s/== Changelog ==.*/== Changelog ==\n\n== $VERSION =\n$CHANGELOG/" readme.txt
           
       - name: Merge and release latest changes into the SVN repo
         env:
