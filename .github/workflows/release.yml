@@ -34,7 +34,7 @@ jobs:
           TAG: ${{ github.ref_name }}
         run: |
           cd ../pp-wp-svn
-          VERSION="$(echo $TAG | cut -c1-2)"
+          VERSION="$(echo $TAG | cut -c2-)"
           svn cp trunk/ tags/$VERSION
           svn ci -m "$COMMIT_MSG" --username flexcubed --password $SVN_SECRET
       # - name: Just checking
