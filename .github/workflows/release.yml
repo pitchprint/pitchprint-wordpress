@@ -15,13 +15,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-        
-      - name: Acquire the SVN copy of the WordPress Plugin
-        run: |
-          cd ..
-          mkdir pp-wp-svn
-          svn co https://plugins.svn.wordpress.org/pitchprint pp-wp-svn
-
+  
       - name: Update files with new version and changes from changelog
         env:
           TAG: ${{ github.ref_name }}
@@ -39,6 +33,8 @@ jobs:
           TAG: ${{ github.ref_name }}
         run: |
           cd ..
+          mkdir pp-wp-svn
+          svn co https://plugins.svn.wordpress.org/pitchprint pp-wp-svn
           cp pitchprint-wordpress/* pp-wp-svn/trunk/ -r
           cd ../pp-wp-svn
           VERSION="$(echo $TAG | cut -c2-)"
