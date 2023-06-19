@@ -22,21 +22,33 @@ jobs:
           mkdir pp-wp-svn
           svn co https://plugins.svn.wordpress.org/pitchprint pp-wp-svn
 
-      - name: Merge latest changes into the SVN repo
+      - name: Update files with new version and changes from changelog
+        env:
+          TAG: ${{ github.ref_name }}
         run: |
-          cd ..
-          cp pitchprint-wordpress/* pp-wp-svn/trunk/ -r
-
-      - name: Release to SVN
+          VERSION="$(echo $TAG | cut -c2-)"
+          CHANGELOG=$(cat CHANGELOG.txt)
+          sed -i "s/Version.*/Version: $VERSION/" pitchprint.php
+          sed -i "s/Stabe tag:.*/Stable tag: $VERSION/" readme.txt
+          sed -i "s/== Changelog ==.*/== Changelog ==\n\n== $VERSION =\n$CHANGELOG/"
+          
+      - name: Merge and release latest changes into the SVN repo
         env:
           COMMIT_MSG:  ${{ github.event.head_commit.message }}
           SVN_SECRET: ${{ secrets.WP_SVN_SECRET }}
           TAG: ${{ github.ref_name }}
         run: |
+          cd ..
+          cp pitchprint-wordpress/* pp-wp-svn/trunk/ -r
           cd ../pp-wp-svn
           VERSION="$(echo $TAG | cut -c2-)"
           svn cp trunk/ tags/$VERSION
           svn ci -m "$COMMIT_MSG" --username flexcubed --password $SVN_SECRET
+      
+      - name: Commit the version updates
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          branch: master
       # - name: Just checking
       #   run: echo 
       # - name: Checkout
