@@ -1,0 +1,45 @@
+name: Main
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+permissions:
+  contents: write
+  
+jobs:
+  
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        
+      - name: Acquire the SVN copy of the WordPress Plugin
+        run: |
+          cd ..
+          mkdir pp-wp-svn
+          svn co https://plugins.svn.wordpress.org/pitchprint pp-wp-svn
+
+      - name: Merge latest changes into the SVN repo
+        run: |
+          
+
+      - name: Release to SVN
+        env:
+          COMMIT_MSG:  ${{ github.event.head_commit.message }}
+          SVN_SECRET: ${{ secrets.WP_SVN_SECRET }}
+        run: |
+          svn ci -m "$COMMIT_MSG" --username flexcubed --password $SVN_SECRET
+      # - name: Just checking
+      #   run: echo 
+      # - name: Checkout
+      # - name: Create asset
+      #   run: cd .. && zip testBump.zip testBump/* -r && cd testBump/
+      # - name: Release
+      #   uses: softprops/action-gh-release@v1
+      #   with:
+      #     body_path: "CHANGELOG.txt"
+      #     name: "Print.App - PrestaShop 1.7.x - ${{ github.ref_name }}"
+      #     files: "../testBump.zip"

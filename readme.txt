@@ -2,8 +2,8 @@
 Contributors: flexcubed
 Tags: customizer, photo album, print shop, web2print, gift print, diy print, product customizer, web-to-print, print software, print solution, HTML5 WYSIWYG, t-shirt designer, wysiwyg print editor, business card
 Requires at least: 3.8
-Tested up to: 5.8
-Stable tag: 10.0.17
+Tested up to: 6.2
+Stable tag: 10.0.28
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -97,6 +97,35 @@ Check out our [website for more details](https://pitchprint.com)
 4. Admin settings.
 
 == Changelog ==
+
+== 10.0.28 =
+Cleared a few warning logs by checking post keys are set.
+
+== 10.0.27 =
+Storing customer project against customer id, if project was created as guest, then customer registered when placing order.
+
+== 10.0.25 =
+Now attaching order ID to project.
+
+== 10.0.24 =
+Tested upto WordPress 6.2 and WooCommerce 7.5.1
+
+== 10.0.23 =
+Fixed glue and pieces implode warning
+
+== 10.0.22 =
+Cart image fix.
+
+== 10.0.20 =
+Improved metadata display.
+It is now possible to change the initialization designId via a filter: set_pitchprint_design_id
+
+== 10.0.19 =
+Display pitchprint meta data in cart for newer cart items in later versions of woocommerce.
+
+== 10.0.18 =
+Add plugin links
+
 == 10.0.17 =
 Category customization added.
 
