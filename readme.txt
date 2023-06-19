@@ -98,6 +98,9 @@ Check out our [website for more details](https://pitchprint.com)
 
 == Changelog ==
 
+== 10.1.1 =
+Added a new workflow
+
 == 10.0.28 =
 Cleared a few warning logs by checking post keys are set.
 
