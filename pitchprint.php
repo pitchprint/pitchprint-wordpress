@@ -4,12 +4,12 @@
 		* Plugin URI: https://pitchprint.com
 		* Description: A beautiful web based print customization app for your online store. Integrates with WooCommerce.
 		* Author: PitchPrint
-		* Version: 10.0.17
+		* Version: 10.1.2
 		* Author URI: https://pitchprint.com
 		* Requires at least: 3.8
-		* Tested up to: 5.7
+		* Tested up to: 6.2
         * WC requires at least: 3.0.0
-        * WC tested up to: 5.6.0
+        * WC tested up to: 7.5.1
 		*
 		* @package PitchPrint
 		* @category Core
@@ -27,7 +27,7 @@
 
 	class PitchPrint {
 
-		public $version = '10.0.17';
+		public $version = '10.0.25';
 
 		protected $editButtonsAdded = false;
 		
@@ -200,7 +200,46 @@
 			}
 		}
 		
-		public function pp_order_after_table() {
+		public function pp_order_after_table($params) {
+			$projectIds = [];
+			$orderId = array_pop($params->items)->get_order_id();
+			$userId = get_current_user_id();
+			$shouldUpdateUserId = false;
+			
+			foreach( $params->items as $orderItem ) {
+				foreach ($orderItem->get_meta_data() as $meta_id => $meta) {
+					if ($meta->key === '_w2p_set_option') {
+						$ppMeta = json_decode(urldecode($meta->value));
+						if ($userId && $ppMeta->userId == 'guest')
+							$shouldUpdateUserId = true;
+						$projectIds[] = $ppMeta->projectId;
+					}
+				}
+			}
+
+			if (count($projectIds)) {
+				$authKey = get_option('ppa_secret_key');
+				$url = 'https://api.pitchprint.com/runtime/append-project-order-id';
+				wp_remote_post($url, array(
+					'headers' => array('Authorization' => $authKey),
+					'body'=>json_encode(array(
+						'projectIds' => $projectIds,
+						'orderId' => $orderId
+					))
+				));	
+				
+				if ($shouldUpdateUserId) {	
+					$url = 'https://api.pitchprint.com/runtime/append-project-user-id';
+					wp_remote_post($url, array(
+						'headers' => array('Authorization' => $authKey),
+						'body'=>json_encode(array(
+							'projectIds' => $projectIds,
+							'userId' => $userId
+						))
+					));
+				}
+			}
+
 			wp_enqueue_script('pitchprint_class', PP_CLIENT_JS);
 			wp_enqueue_script('pitchprint_class_noes6', PP_NOES6_JS);
 			
@@ -220,11 +259,16 @@
 		}
 		
 		public function pp_order_items_display($output, $item) {
-			foreach ($item->get_meta_data() as $meta_id => $meta) {
-				if ($meta->key === '_w2p_set_option') {
-					$output .= '<span style="display:none" data-pp="' . rawurlencode($meta->value) . '" class="pp-cart-order"></span>';
-				}
+			if ( is_array($item) ) {
+				if ( isset($item['_w2p_set_option']) )
+					$output .= '<br/><a href="#" id="' . $item['_w2p_set_option'] . '" class="button pp-cart-data"></a>';
 			}
+			else
+				foreach ($item->get_meta_data() as $meta_id => $meta) {
+					if ($meta->key === '_w2p_set_option') {
+						$output .= '<span style="display:none" data-pp="' . rawurlencode($meta->value) . '" class="pp-cart-order"></span>';
+					}
+				}
 			return $output;
         }
         public function pp_order_items_meta_display($output, $_this) {
@@ -239,6 +283,7 @@
         }
 
 		public function pp_my_recent_order() {
+			
 			global $post, $woocommerce;
 			wp_enqueue_script('pitchprint_class', PP_CLIENT_JS);
 			wp_enqueue_script('pitchprint_class_noes6', PP_NOES6_JS);
@@ -290,7 +335,10 @@
 				$itm = $val['_w2p_set_option'];
 				$itm = json_decode(rawurldecode($itm), true);
 				if ($itm['type'] == 'p') {
-					$img = '<img style="width:90px" src="' . PP_IOBASE . '/previews/' . $itm['projectId'] . '_1.jpg" >';
+					$ppImagePrev = ' pp-cart-image-preview="' . PP_IOBASE . '/previews/' . $itm['projectId'] . '_1.jpg" ';
+					$pattern = '/\s(?!\")/';
+					$img = preg_replace( $pattern, $ppImagePrev, $img, 1 );
+					echo '<script>console.log(`'. $img . '`)</script>';
 				} else {
 					$img = '<img style="width:90px" src="' . $itm['previews'][0] . '" >';
 				}
@@ -395,7 +443,7 @@
 			$pp_customization_required = get_post_meta( $post->ID, '_w2p_required_option', true );
 			$pp_pdf_download = get_post_meta( $post->ID, '_w2p_pdf_download_option', true );
 			$pp_use_design_preview = get_post_meta( $post->ID, '_w2p_use_design_preview_option', true );
-			// var_dump($pp_customization_required);die();
+			
 			$pp_customization_required = 
 				( $pp_customization_required === 'undefined' || 
 				( isset($pp_customization_required) && strlen($pp_customization_required) == 0) ) ? 0 : ( $pp_customization_required ? 1 : 0 );
@@ -487,7 +535,9 @@
 			}
 			
 			// $miniMode = $pp_set_option[0] === "3d8f3899904ef2392795c681091600d0" ? '\'mini\'' : 'undefined';
-
+			
+			$pp_design_id = apply_filters('set_pitchprint_design_id', $pp_design_id);
+			
 			wc_enqueue_js("
 				ajaxsearch = undefined;
 				(function(_doc) {
@@ -538,7 +588,7 @@
 			}
 			
 			$reqCVal = get_post_meta($post_id, '_w2p_required_option', true);
-			$reqNVal = $_POST['ppa_pick_required'];
+			$reqNVal = isset($_POST['ppa_pick_required']) ? $_POST['ppa_pick_required']: NULL;
 			
 			if($reqCVal !== NULL && $reqCVal !== 'checked' && strlen($reqNVal) == 0)
 				$reqNVal = 'undefined';
@@ -547,7 +597,7 @@
 			}
 			
 			$downlCVal = get_post_meta($post_id, '_w2p_pdf_download_option', true);
-			$downlNVal = $_POST['ppa_pick_pdf_download'];
+			$downlNVal = isset($_POST['ppa_pick_pdf_download']) ? $_POST['ppa_pick_pdf_download']: NULL;
 			if($downlCVal !== NULL && $downlCVal !== 'checked' && strlen($downlNVal) == 0 )
 				$downlNVal = 'undefined';
 			if ( ! add_post_meta( $post_id, '_w2p_pdf_download_option', $downlNVal, true ) ) { 
@@ -555,7 +605,7 @@
 			}
 			
 			$useDesignPrevCVal = get_post_meta($post_id, '_w2p_use_design_preview_option', true);
-			$useDesignPrevCValNVal = $_POST['ppa_pick_use_design_preview'];
+			$useDesignPrevCValNVal = isset($_POST['ppa_pick_use_design_preview']) ? $_POST['ppa_pick_use_design_preview'] : NULL;
 			if($useDesignPrevCVal !== NULL && $useDesignPrevCVal !== 'checked' && strlen($useDesignPrevCValNVal) == 0 )
 				$useDesignPrevCValNVal = 'undefined';
 			if ( ! add_post_meta( $post_id, '_w2p_use_design_preview_option', $useDesignPrevCValNVal, true ) )  
@@ -765,7 +815,7 @@
 			$table_name 		= $wpdb->prefix . 'pitchprint_projects';
 			$charset_collate	= $wpdb->get_charset_collate();
 			
-			$sql = "CREATE TABLE $table_name (
+			$sql = "CREATE TABLE IF NOT EXISTS $table_name (
 			  id varchar(55) NOT NULL ,
 			  product_id mediumint(9) NOT NULL,
 			  value TEXT  NOT NULL,

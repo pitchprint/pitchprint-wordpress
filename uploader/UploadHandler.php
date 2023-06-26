@@ -1015,7 +1015,7 @@ class UploadHandler
         }
         if (count($failed_versions)) {
             $file->error = $this->get_error_message('image_resize')
-                    .' ('.implode($failed_versions,', ').')';
+                    .' ('.implode(', ', $failed_versions).')';
         }
         // Free memory:
         $this->destroy_image_object($file_path);
@@ -1275,6 +1275,9 @@ class UploadHandler
             // param_name is an array identifier like "files[]",
             // $_FILES is a multi-dimensional array:
             foreach ($upload['tmp_name'] as $index => $value) {
+            	$cNameArr = explode('.', $upload['name'][$index]);
+                $ext = array_pop($cNameArr);
+                $upload['name'][$index] = implode('.',$cNameArr).uniqid().'_'.time().'.'.$ext;
                 $files[] = $this->handle_file_upload(
                     $upload['tmp_name'][$index],
                     $file_name ? $file_name : $upload['name'][$index],
