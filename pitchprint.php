@@ -70,7 +70,8 @@
 				add_action('woocommerce_after_cart', array($this, 'pp_get_cart_action'));
 				add_action('woocommerce_after_checkout_form', array($this, 'pp_get_cart_action'));
 				add_action('woocommerce_before_shop_loop', array($this, 'add_cat_script'));
-				//add_action('woocommerce_thankyou', array($this,'pp_check_webhook_status'));
+				add_action('wp_ajax_nopriv_pitch_print_save_project', array($this, 'pitch_print_save_project'));
+				add_action('wp_ajax_pitch_print_save_project', array($this, 'pitch_print_save_project'));
 			} else if ($this->request_type('admin')) {
 				add_action('admin_menu', array($this, 'ppa_actions'));
 				add_action('woocommerce_admin_order_data_after_order_details', array($this, 'ppa_order_details'));
@@ -80,6 +81,55 @@
 				add_action('admin_init', array($this, 'ppa_settings_api_init'));
 			}
 			add_action('woocommerce_order_status_changed', array($this,'pp_order_status_completed'),10,3);
+		}
+		// SAVE PROJECT DATA ON CLIENT SERVER FOR PAGE REFRESH AND NOT YET ADDED TO CART.
+		public function pitch_print_save_project() {
+			global $wpdb;
+			if (!isset($_COOKIE['pitchprint_sessId'])) return wp_die(json_encode(array('success'=>false)));
+			$sessId = sanitize_text_field($_COOKIE['pitchprint_sessId']);
+			
+			// CLEAR DESIGN
+			if (isset($_POST['clear'])) {
+				$wpdb->delete($this->ppTable, array('id' => $sessId, 'product_id' => $_POST['productId']) );
+				wp_die(json_encode(array('success'=>true)));
+			}
+			
+			// CONTINUE TO SAVE PROJECT
+			if (!isset($_POST['values'])) return wp_die(json_encode(array('success'=>false)));
+			$value		= json_decode(stripslashes(urldecode($_POST['values'])), true);
+			
+			if (!$value) return wp_die(json_encode(array('success'=>false)));
+			$productId	= $value['product']['id'];
+			
+			// Delete old
+			$wpdb->delete($this->ppTable, array('id' => $sessId, 'product_id' => $productId) );
+			// Insert new
+			$date = date('Y-m-d H:i:s', time()+60*60*24*30);
+			$table_name = $this->ppTable;
+			$sql = $wpdb->prepare("INSERT INTO `{$table_name}` VALUES (%s, %d, %s, %s)", $sessId, $productId, json_encode($value), $date);
+			$exec = dbDelta($sql);
+			wp_die(json_encode(array('success'=>true))); 
+		}
+		//  A CUSTOM FUNCTION TO SANITIZE OUR PITCHPRINT VALUE OBJECT
+		private function custom_sanitize_pp_object($object, $allowedKeys) {
+			$cleanItem = array();
+			foreach($object as $key => $value) {
+				if (in_array($key, $allowedKeys)) {
+					if ($key == 'previews' && is_array($value)) {
+						$cleanItem[$key] = array();
+						foreach ($value as $prevKey => $prev)
+							if(is_array($prev)) {
+								$cleanItem[$key][$prevKey] = array();
+								$cleanItem[$key][$prevKey]['url'] = sanitize_url($prev['url']);//sanitize_url($url);
+							}
+					}
+					elseif ($key == 'isAdmin')
+						$cleanItem[$key] = rest_sanitize_boolean($value);
+					else
+						$cleanItem[$key] = sanitize_text_field($value);
+				}
+			}
+			return $cleanItem;
 		}
 		public function add_cat_script() {
 			if ( get_option('ppa_cat_customize') == 'on' )
@@ -360,8 +410,7 @@
 		public function pp_get_cart_mod( $item_data, $cart_item ) {
 			if (!is_page('cart')) return $item_data;
 			if (!empty($cart_item['_w2p_set_option'])) {
-				$val = $cart_item['_w2p_set_option'];
-				$itm = json_decode(rawurldecode($val), true);
+				$val = urlencode($cart_item['_w2p_set_option']);
 				$item_data[] = array(
 					'name'    => '<span id="' . $val . '" class="pp-cart-label"></span>',
 					'display' => '<a href="#" id="' . $val . '" class="button pp-cart-data"></a>'
@@ -543,6 +592,7 @@
 				(function(_doc) {
 					if (typeof PitchPrintClient === 'undefined') return;
 					window.ppclient = new PitchPrintClient({
+						adminUrl: '" . admin_url( 'admin-ajax.php' ) ."',
 						displayMode: '{$pp_display_option}',
 						customizationRequired: ". $pp_customization_required.",
 						pdfDownload: ". $pp_pdf_download .",
