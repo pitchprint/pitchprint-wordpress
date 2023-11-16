@@ -448,10 +448,6 @@
 			}
 			return $cart_item_meta;
 		}
-
-		private function register_session(){
-			if(!session_id() && !headers_sent()) session_start();
-		}
 		
 		private function getProjectData($product_id = null) {
 			if (!$product_id) {
