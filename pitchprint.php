@@ -448,6 +448,12 @@
 			}
 			return $cart_item_meta;
 		}
+
+		private function register_session(){
+			if(!session_id() && !headers_sent()) session_start();
+			if(!isset($_COOKIE['pitchprint_sessId']))
+			setcookie('pitchprint_sessId', uniqid('pp_w2p_', true), time()+60*60*24*30, '/');
+		}
 		
 		private function getProjectData($product_id = null) {
 			if (!$product_id) {
