@@ -3,7 +3,7 @@ Contributors: flexcubed
 Tags: customizer, photo album, print shop, web2print, gift print, diy print, product customizer, web-to-print, print software, print solution, HTML5 WYSIWYG, t-shirt designer, wysiwyg print editor, business card
 Requires at least: 3.8
 Tested up to: 6.2
-Stable tag: 10.1.5
+Stable tag: 10.1.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -97,6 +97,9 @@ Check out our [website for more details](https://pitchprint.com)
 4. Admin settings.
 
 == Changelog ==
+
+== 10.1.6 =
+Fixed session bug.
 
 == 10.1.5 =
 Fixed session bug.
