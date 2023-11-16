@@ -1,1 +1,1 @@
-Fixed session bug.
+Fixed another session bug.
