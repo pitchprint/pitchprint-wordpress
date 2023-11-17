@@ -98,7 +98,9 @@
 			if (!isset($_POST['values'])) return wp_die(json_encode(array('success'=>false)));
 			$value		= json_decode(stripslashes(urldecode($_POST['values'])), true);
 			
-			if (!$value) return wp_die(json_encode(array('success'=>false)));
+			if (!$value) $value = json_decode(urldecode($_POST['values']),true);
+			if (!$value) return wp_die(json_encode(array('success'=>false, 'reason'=>'bad input format')));			
+			
 			$productId	= $value['product']['id'];
 			
 			// Delete old
