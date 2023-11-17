@@ -85,7 +85,7 @@
 		// SAVE PROJECT DATA ON CLIENT SERVER FOR PAGE REFRESH AND NOT YET ADDED TO CART.
 		public function pitch_print_save_project() {
 			global $wpdb;
-			if (!isset($_COOKIE['pitchprint_sessId'])) return wp_die(json_encode(array('success'=>false)));
+			if (!isset($_COOKIE['pitchprint_sessId'])) return wp_die(json_encode(array('success'=>false, 'reason'=>'no pitchprint session available')));
 			$sessId = sanitize_text_field($_COOKIE['pitchprint_sessId']);
 			
 			// CLEAR DESIGN
@@ -95,11 +95,11 @@
 			}
 			
 			// CONTINUE TO SAVE PROJECT
-			if (!isset($_POST['values'])) return wp_die(json_encode(array('success'=>false)));
+			if (!isset($_POST['values'])) return wp_die(json_encode(array('success'=>false, 'reason'=>'input is empty')));
 			$value		= json_decode(stripslashes(urldecode($_POST['values'])), true);
 			
 			if (!$value) $value = json_decode(urldecode($_POST['values']),true);
-			if (!$value) return wp_die(json_encode(array('success'=>false, 'reason'=>'bad input format')));			
+			if (!$value) return wp_die(json_encode(array('success'=>false, 'reason'=>'bad input format')));
 			
 			$productId	= $value['product']['id'];
 			
@@ -108,8 +108,8 @@
 			// Insert new
 			$date = date('Y-m-d H:i:s', time()+60*60*24*30);
 			$table_name = $this->ppTable;
-			$sql = $wpdb->prepare("INSERT INTO `{$table_name}` VALUES (%s, %d, %s, %s)", $sessId, $productId, json_encode($value), $date);
-			$exec = dbDelta($sql);
+			$sql = $wpdb->prepare("INSERT INTO `{$table_name}` VALUES (%s, %d, %s, %s)", $sessId, $productId, $_POST['values'], $date);
+			$exec = $wpdb->query($sql);
 			wp_die(json_encode(array('success'=>true))); 
 		}
 		//  A CUSTOM FUNCTION TO SANITIZE OUR PITCHPRINT VALUE OBJECT
@@ -390,7 +390,9 @@
 					$ppImagePrev = ' pp-cart-image-preview="' . PP_IOBASE . '/previews/' . $itm['projectId'] . '_1.jpg" ';
 					$pattern = '/\s(?!\")/';
 					$img = preg_replace( $pattern, $ppImagePrev, $img, 1 );
-					echo '<script>console.log(`'. $img . '`)</script>';
+					$pattern = '/src="(.+?(?="))/';
+					$ppImageSrc = 'src="' . PP_IOBASE . '/previews/' . $itm['projectId'] . '_1.jpg" ';
+					$img = preg_replace( $pattern, $ppImageSrc, $img, 1 );
 				} else {
 					$img = '<img style="width:90px" src="' . $itm['previews'][0] . '" >';
 				}
@@ -412,7 +414,7 @@
 		public function pp_get_cart_mod( $item_data, $cart_item ) {
 			if (!is_page('cart')) return $item_data;
 			if (!empty($cart_item['_w2p_set_option'])) {
-				$val = urlencode($cart_item['_w2p_set_option']);
+				$val = $cart_item['_w2p_set_option'];
 				$item_data[] = array(
 					'name'    => '<span id="' . $val . '" class="pp-cart-label"></span>',
 					'display' => '<a href="#" id="' . $val . '" class="button pp-cart-data"></a>'

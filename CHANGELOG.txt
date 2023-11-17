@@ -1,1 +1,1 @@
-Decoding process improved.
+Updates made to project preview in cart.
