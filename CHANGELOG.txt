@@ -1,1 +1,1 @@
-Updates made to project preview in cart.
+Tested up to WordPress 6.3
