@@ -4,7 +4,7 @@
 		* Plugin URI: https://pitchprint.com
 		* Description: A beautiful web based print customization app for your online store. Integrates with WooCommerce.
 		* Author: PitchPrint
-		* Version: 10.2.1
+		* Version: 10.2.2
 		* Author URI: https://pitchprint.com
 		* Requires at least: 3.8
 		* Tested up to: 6.4
@@ -116,7 +116,9 @@
 			$table_name = $this->ppTable;
 			$sql = $wpdb->prepare("INSERT INTO `{$table_name}` VALUES (%s, %d, %s, %s)", $sessId, $productId, $_POST['values'], $date);
 			$exec = $wpdb->query($sql);
-			wp_die(json_encode(array('success'=>true))); 
+			
+			$product_url = get_permalink($productId);
+			wp_die(json_encode(array('success'=>true, 'productUrl'=>$product_url))); 
 		}
 		//  A CUSTOM FUNCTION TO SANITIZE OUR PITCHPRINT VALUE OBJECT
 		private function custom_sanitize_pp_object($object, $allowedKeys) {
