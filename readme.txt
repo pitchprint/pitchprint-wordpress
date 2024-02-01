@@ -99,6 +99,9 @@ Check out our [website for more details](https://pitchprint.com)
 == Changelog ==
 
 == 10.2.2 =
+Tested up to WordPress 6.3
+
+== 10.2.2 =
 Minor release bug fix
 
 == 10.2.1 =
