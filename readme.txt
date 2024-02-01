@@ -102,6 +102,9 @@ Check out our [website for more details](https://pitchprint.com)
 Updated to using adminUrl in non-product pages.
 
 == 10.2.0 =
+Tested up to WordPress 6.3
+
+== 10.2.0 =
 Added compatibility for WooCommerce High Performance Order Storage Upgrade
 Tested up to WooCommerce 8.0.2
 
