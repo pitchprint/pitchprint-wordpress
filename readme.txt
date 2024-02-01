@@ -3,7 +3,7 @@ Contributors: flexcubed
 Tags: customizer, photo album, print shop, web2print, gift print, diy print, product customizer, web-to-print, print software, print solution, HTML5 WYSIWYG, t-shirt designer, wysiwyg print editor, business card
 Requires at least: 3.8
 Tested up to: 6.3
-Stable tag: 10.1.9
+Stable tag: 10.2.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -50,7 +50,7 @@ The manual installation method involves downloading our plugin and uploading it 
 	* plugins/pitchprint/uploader/files/thumbnail
 
 2. Next, you need to install PitchPrint API Key. On the left side of the admin menu, you should find "PitchPrint" link. Click it and in the admin page, you will find a link labelled "PLEASE INSTALL PITCHPRINT APIKEY".
-3. Generate and supply the API Key from [our site:](https://admin.pitchprint.io/domains)
+3. Generate and supply the API Key from [our site:](https://admin.pitchprint.com/domains)
 4. Submit the form and once complete, please delete the install folder as instructed.
 5. To administer a product, go to Products section in the admin and click the "Add Product" link.
 6. There in the Product Data section, you will find "PitchPrint" design template option; select your desired template to assign.
@@ -70,7 +70,7 @@ Yes it does work on iPad and tablets. It's built on HTML5.
 
 = How do I get support? =
 
-We provide support via our [Slack portal:](http://slack.pitchprint.com) where you get to make suggestions, discuss with other users on the forum report any bug as well as request a support to getting your store properly working.
+We provide support via our [Helpscout Portal:](https://pitchprint.com) where you get to make suggestions, discuss with other users on the forum report any bug as well as request a support to getting your store properly working.
 
 = Does the product come with templates and clipart images? =
 
@@ -97,6 +97,10 @@ Check out our [website for more details](https://pitchprint.com)
 4. Admin settings.
 
 == Changelog ==
+
+== 10.2.0 =
+Added compatibility for WooCommerce High Performance Order Storage Upgrade
+Tested up to WooCommerce 8.0.2
 
 == 10.1.9 =
 Tested up to WordPress 6.3

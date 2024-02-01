@@ -4,12 +4,12 @@
 		* Plugin URI: https://pitchprint.com
 		* Description: A beautiful web based print customization app for your online store. Integrates with WooCommerce.
 		* Author: PitchPrint
-		* Version: 10.1.9
+		* Version: 10.2.0
 		* Author URI: https://pitchprint.com
 		* Requires at least: 3.8
 		* Tested up to: 6.2
         * WC requires at least: 3.0.0
-        * WC tested up to: 7.5.1
+        * WC tested up to: 8.0.2
 		*
 		* @package PitchPrint
 		* @category Core
@@ -27,7 +27,7 @@
 
 	class PitchPrint {
 
-		public $version = '10.0.25';
+		public $version = '10.2.0';
 
 		protected $editButtonsAdded = false;
 		
@@ -51,6 +51,12 @@
 		}
 
 		private function init_hooks() {
+			add_action( 'before_woocommerce_init', function() {
+				if ( class_exists( \Automattic\WooCommerce\Utilities\FeaturesUtil::class ) ) {
+					\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'custom_order_tables', __FILE__, true );
+				}
+			} );
+			
 			if ($this->request_type('frontend')) {
 				add_filter('woocommerce_get_cart_item_from_session', array($this, 'pp_get_cart_item_from_session'), 10, 2);
 				add_filter('woocommerce_get_item_data',  array($this, 'pp_get_cart_mod'), 10, 2);
@@ -254,7 +260,16 @@
 		
 		public function pp_order_after_table($params) {
 			$projectIds = [];
-			$orderId = array_pop($params->items)->get_order_id();
+
+			$items = $params->items;
+			$lastItem = end($items);
+			if(is_object($lastItem) && method_exists($lastItem, 'get_order_id')) {
+				$orderId = $lastItem->get_order_id();
+			} else {
+				$orderId = null;
+			}
+			// $orderId = array_pop($params->items)->get_order_id();
+			
 			$userId = get_current_user_id();
 			$shouldUpdateUserId = false;
 			
