@@ -4,10 +4,10 @@
 		* Plugin URI: https://pitchprint.com
 		* Description: A beautiful web based print customization app for your online store. Integrates with WooCommerce.
 		* Author: PitchPrint
-		* Version: 10.2.0
+		* Version: 10.2.1
 		* Author URI: https://pitchprint.com
 		* Requires at least: 3.8
-		* Tested up to: 6.2
+		* Tested up to: 6.4
         * WC requires at least: 3.0.0
         * WC tested up to: 8.0.2
 		*
@@ -320,6 +320,7 @@
 						pluginRoot: '" . site_url() . "/pitchprint/',
 						apiKey: '" . get_option('ppa_api_key') . "',
 						client: 'wp',
+						adminUrl: '" . admin_url( 'admin-ajax.php' ) ."',
 						afterValidation: '_sortCart'
 					});
 				})(document);");
@@ -371,6 +372,7 @@
 						apiKey: '" . get_option('ppa_api_key') . "',
 						client: 'wp',
 						afterValidation: '_fetchProjects',
+						adminUrl: '" . admin_url( 'admin-ajax.php' ) ."',
 						isCheckoutPage: " . (is_checkout() ? 'true' : 'false') . "
 					});
 				})(document);");
@@ -392,6 +394,7 @@
 						apiKey: '" . get_option('ppa_api_key') . "',
 						client: 'wp',
 						afterValidation: '_sortCart',
+						adminUrl: '" . admin_url( 'admin-ajax.php' ) ."',
 						isCheckoutPage: " . (is_checkout() ? 'true' : 'false') . "
 					});
 				})(document);");
