@@ -16,6 +16,13 @@
 		* @author PitchPrint
         */
 
+	include 'constants.php';
+	include 'hooks.php';
+	include 'functions/projects.php';
+	include 'functions/scripts.php';
+	include 'functions/webhooks.php';
+	include 'functions/general.php';
+
 	load_plugin_textdomain('PitchPrint', false, basename( dirname( __FILE__ ) ) . '/languages/' );
 	
 	function end_session() {
@@ -31,234 +38,15 @@
 
 		protected $editButtonsAdded = false;
 		
-		private $ppTable;
+		public $ppTable;
 
 		public function __construct() {
 			global $wpdb;
 			$this->ppTable = $wpdb->prefix . 'pitchprint_projects';
-			$this->define_constants();
-			$this->init_hooks();
+			\constants\define_constants();
+			\hooks\init_hooks();
 		}
 
-		private function define_constants() {
-			define('PP_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
-			define('PP_IOBASE', 'https://pitchprint.io');
-			define('PP_CLIENT_JS', 'https://pitchprint.io/rsc/js/client.js');
-			define('PP_CAT_CLIENT_JS', 'https://pitchprint.io/rsc/js/cat-client.js');
-			define('PP_NOES6_JS', 'https://pitchprint.io/rsc/js/noes6.js');
-			define('PP_ADMIN_JS', 'https://pitchprint.io/rsc/js/a.wp.js');
-			define('PPADMIN_DEF', "var PPADMIN = window.PPADMIN; if (typeof PPADMIN === 'undefined') window.PPADMIN = PPADMIN = { version: '9.0.0', readyFncs: [] };");
-		}
-
-		private function init_hooks() {
-			add_action( 'before_woocommerce_init', function() {
-				if ( class_exists( \Automattic\WooCommerce\Utilities\FeaturesUtil::class ) ) {
-					\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'custom_order_tables', __FILE__, true );
-				}
-			} );
-			
-			if ($this->request_type('frontend')) {
-				add_filter('woocommerce_get_cart_item_from_session', array($this, 'pp_get_cart_item_from_session'), 10, 2);
-				add_filter('woocommerce_get_item_data',  array($this, 'pp_get_cart_mod'), 10, 2);
-				add_filter('woocommerce_cart_item_thumbnail', array($this, 'pp_cart_thumbnail'), 70, 2);
-				add_filter('woocommerce_cart_item_permalink', array($this, 'pp_cart_item_permalink'), 70, 2);
-				add_filter('woocommerce_add_cart_item_data', array($this, 'pp_add_cart_item_data'), 10, 2);
-
-				add_filter('woocommerce_display_item_meta', array($this, 'pp_order_items_display'), 10, 2);
-				add_filter('woocommerce_order_items_meta_display', array($this, 'pp_order_items_meta_display'), 10, 2);
-				add_filter('woocommerce_order_details_after_order_table', array($this, 'pp_order_after_table'));
-
-				add_action('woocommerce_before_my_account',  array($this, 'pp_my_recent_order'));
-				add_action('woocommerce_add_order_item_meta', array($this, 'pp_add_order_item_meta'), 70, 2);
-
-				add_action('wp_head', array($this, 'pp_header_files'));
-				add_action('woocommerce_before_add_to_cart_button', array($this, 'add_pp_edit_button'));
-				add_action('woocommerce_after_cart', array($this, 'pp_get_cart_action'));
-				add_action('woocommerce_after_checkout_form', array($this, 'pp_get_cart_action'));
-				add_action('woocommerce_before_shop_loop', array($this, 'add_cat_script'));
-				add_action('wp_ajax_nopriv_pitch_print_save_project', array($this, 'pitch_print_save_project'));
-				add_action('wp_ajax_pitch_print_save_project', array($this, 'pitch_print_save_project'));
-			} else if ($this->request_type('admin')) {
-				add_action('admin_menu', array($this, 'ppa_actions'));
-				add_action('woocommerce_admin_order_data_after_order_details', array($this, 'ppa_order_details'));
-				add_action('woocommerce_product_options_pricing', array($this, 'ppa_design_selection'));
-				add_action('woocommerce_process_product_meta', array($this, 'ppa_write_panel_save'));
-				add_filter('plugin_action_links_' . plugin_basename(__FILE__), array($this, 'ppa_add_settings_link'));
-				add_action('admin_init', array($this, 'ppa_settings_api_init'));
-			}
-			add_action('woocommerce_order_status_changed', array($this,'pp_order_status_completed'),10,3);
-		}
-		// SAVE PROJECT DATA ON CLIENT SERVER FOR PAGE REFRESH AND NOT YET ADDED TO CART.
-		public function pitch_print_save_project() {
-			global $wpdb;
-			if (!isset($_COOKIE['pitchprint_sessId'])) return wp_die(json_encode(array('success'=>false, 'reason'=>'no pitchprint session available')));
-			$sessId = sanitize_text_field($_COOKIE['pitchprint_sessId']);
-			
-			// CLEAR DESIGN
-			if (isset($_POST['clear'])) {
-				$wpdb->delete($this->ppTable, array('id' => $sessId, 'product_id' => $_POST['productId']) );
-				wp_die(json_encode(array('success'=>true)));
-			}
-			
-			// CONTINUE TO SAVE PROJECT
-			if (!isset($_POST['values'])) return wp_die(json_encode(array('success'=>false, 'reason'=>'input is empty')));
-			$value		= json_decode(stripslashes(urldecode($_POST['values'])), true);
-			
-			if (!$value) $value = json_decode(urldecode($_POST['values']),true);
-			if (!$value) return wp_die(json_encode(array('success'=>false, 'reason'=>'bad input format')));
-			
-			$productId	= $value['product']['id'];
-			
-			// Delete old
-			$wpdb->delete($this->ppTable, array('id' => $sessId, 'product_id' => $productId) );
-			// Insert new
-			$date = date('Y-m-d H:i:s', time()+60*60*24*30);
-			$table_name = $this->ppTable;
-			$sql = $wpdb->prepare("INSERT INTO `{$table_name}` VALUES (%s, %d, %s, %s)", $sessId, $productId, $_POST['values'], $date);
-			$exec = $wpdb->query($sql);
-			
-			$product_url = get_permalink($productId);
-			wp_die(json_encode(array('success'=>true, 'productUrl'=>$product_url))); 
-		}
-		//  A CUSTOM FUNCTION TO SANITIZE OUR PITCHPRINT VALUE OBJECT
-		private function custom_sanitize_pp_object($object, $allowedKeys) {
-			$cleanItem = array();
-			foreach($object as $key => $value) {
-				if (in_array($key, $allowedKeys)) {
-					if ($key == 'previews' && is_array($value)) {
-						$cleanItem[$key] = array();
-						foreach ($value as $prevKey => $prev)
-							if(is_array($prev)) {
-								$cleanItem[$key][$prevKey] = array();
-								$cleanItem[$key][$prevKey]['url'] = sanitize_url($prev['url']);//sanitize_url($url);
-							}
-					}
-					elseif ($key == 'isAdmin')
-						$cleanItem[$key] = rest_sanitize_boolean($value);
-					else
-						$cleanItem[$key] = sanitize_text_field($value);
-				}
-			}
-			return $cleanItem;
-		}
-		public function add_cat_script() {
-			if ( get_option('ppa_cat_customize') == 'on' )
-				wp_enqueue_script('pitchprint_cat_client', PP_CAT_CLIENT_JS);
-		}
-		function pp_check_webhook_status($order_id) {
-			$order = wc_get_order( $order_id );
-			if($order->get_data()['status'] === 'processing') pp_order_status_completed($order_id, null, 'processing');
-		}
-		
-		private function clearProjects($productId) {
-			global $wpdb;
-			$sessId = isset($_COOKIE['pitchprint_sessId']) ? $_COOKIE['pitchprint_sessId'] : false;
-			if (!$sessId) return false;
-			$wpdb->delete($this->ppTable, array('id' => $sessId, 'product_id' => $productId) );
-		}
-		
-		private function clearOldProjects() {
-			global $wpdb;
-			$sql = "DELETE FROM `$this->ppTable` WHERE `expires` < '" . date('Y-m-d H:i:s', time()) . "';";
-			$wpdb->query($sql);
-		}
-		
-		function pp_order_status_completed($order_id, $status_from, $status_to) {
-			$pp_webhookUrl = false;
-			
-			// Clear Old Projects
-			if ( date('j') == '1' ) 
-				$this->clearOldProjects();
-			
-			if ( $status_to === "completed" ) $pp_webhookUrl = 'order-complete';
-			if ( $status_to === "processing" ) $pp_webhookUrl = 'order-processing';
-			
-			if ( $pp_webhookUrl ) {
-				
-				$order = wc_get_order($order_id);
-				$order_data = $order->get_data();
-
-				$billing = $order_data['billing'];
-				$billingEmail = $billing['email'];
-				$billingPhone = $billing['phone'];
-				$billingName = $billing['first_name'] . " " . $billing['last_name'];
-				
-				$addressArr = ['address_1', 'address_2', 'city', 'postcode', 'country'];
-				$billingAddress = '';
-				foreach ($addressArr as $addKey) 
-					if (!empty($billing[$addKey])) 
-						$billingAddress .= $billing[$addKey].", ";
-				$billingAddress = substr($billingAddress, 0, strlen($billingAddress) -2);
-
-				$shippingName = $order_data['shipping']['first_name'] . " " . $order_data['shipping']['last_name'];
-				$shippingAddress = $order->get_formatted_shipping_address();
-				$status = $order_data['status'];
-
-				$products = $order->get_items();
-				$userId = $order_data['customer_id'];
-				$items = array();
-
-				foreach ($products as $item_key => $item_values) {
-					$item_data = $item_values->get_data();
-					$items[] = array(
-						'name' => $item_data['name'],
-						'id' => $item_data['product_id'],
-						'qty' => $item_data['quantity'],
-						'pitchprint' => wc_get_order_item_meta($item_key, '_w2p_set_option')
-					);
-				}
-
-				// If empty Pitchprint value, then we won't trigger the webhook.
-				$pp_empty = true;
-				foreach ($items as $item) {
-					if (!empty($item['pitchprint'])) {
-						$pp_empty = false;
-						break;
-					}
-				}
-
-				if (!$pp_empty) {
-				
-					$items = json_encode($items);
-					$cred = $this->pp_fetch_credentials();
-					
-					$ch = curl_init();
-					
-					curl_setopt($ch, CURLOPT_URL, "https://api.pitchprint.io/runtime/$pp_webhookUrl");
-					curl_setopt($ch, CURLOPT_POST, true);
-					
-					$opts =  array (
-								'products' => $items,
-								'client' => 'wp',
-								'billingEmail' => $billingEmail,
-								'billingPhone' => $billingPhone,
-								'billingName' => $billingName,
-								'billingAddress' => $billingAddress,
-								'shippingName' => $shippingName,
-								'shippingAddress' => $shippingAddress,
-								'orderId' => $order_id,
-								'customer' => $userId,
-								'status' => $status,
-								'apiKey' => get_option('ppa_api_key'),
-								'signature' => $cred['signature'],
-								'timestamp' => $cred['timestamp']
-							);
-					
-					curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($opts));
-					curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-					
-					$output = curl_exec($ch);
-					$http_status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-					$content_type = curl_getinfo($ch, CURLINFO_CONTENT_TYPE);
-					$curlerr = curl_error($ch);
-					curl_close($ch);
-
-					if ($curlerr) {
-					   error_log(print_r($curlerr, true));
-					}
-				}
-			}
-		}
 		
 		public function pp_order_after_table($params) {
 			$projectIds = [];
@@ -739,12 +527,7 @@
 			return $actions;
 		}
 
-		private function pp_fetch_credentials() {
-			$timestamp = time();
-			$api_key = get_option('ppa_api_key');
-			$secret_key = get_option('ppa_secret_key');
-			return array( 'signature' => md5($api_key . $secret_key . $timestamp), 'timestamp' => $timestamp);
-		}
+		
 
 		public function ppa_order_details() {
 			global $post, $woocommerce;
