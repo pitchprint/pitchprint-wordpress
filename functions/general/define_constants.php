@@ -1,5 +1,6 @@
 <?php
-namespace \functions\constants;
+
+namespace pitchprint\functions\general;
 
 function define_constants() {
     define('PP_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );

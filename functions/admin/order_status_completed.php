@@ -1,13 +1,13 @@
 <?php
 
-namespace functionswebhooks;
+namespace pitchprint\functions\admin;
 
-function pp_order_status_completed($order_id, $status_from, $status_to) {
+function order_status_completed($order_id, $status_from, $status_to) {
     $pp_webhookUrl = false;
     
     // Clear Old Projects
     if ( date('j') == '1' ) 
-        \functions\session\clearOldProjects();
+        \pitchprint\functions\general\clearOldProjects();
     
     if ( $status_to === "completed" ) $pp_webhookUrl = 'order-complete';
     if ( $status_to === "processing" ) $pp_webhookUrl = 'order-processing';
@@ -59,7 +59,7 @@ function pp_order_status_completed($order_id, $status_from, $status_to) {
         if (!$pp_empty) {
         
             $items = json_encode($items);
-            $cred = \functions\general\fetch_credentials();
+            $cred = \pitchprint\functions\general\fetch_credentials();
             
             $ch = curl_init();
             
