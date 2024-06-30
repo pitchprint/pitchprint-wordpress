@@ -52,7 +52,7 @@ function install() {
 	$dbVersion = get_option('pitchprint_db_version');
 
 	if (version_compare($dbVersion, PP_DB_VERSION, '<')) {
-		pitchprint\functions\updates\db_product_id_medint_int();
+		\pitchprint\functions\updates\db_product_id_medint_int();
 		update_option('pitchprint_db_version', PP_DB_VERSION);
 	}
 }
