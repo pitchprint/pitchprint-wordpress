@@ -47,4 +47,12 @@ function install() {
 		update_option('pitchprint_version', $PitchPrint->version);
 	else
 		add_option('pitchprint_version', $PitchPrint->version);
+
+	// Update DB version
+	$dbVersion = get_option('pitchprint_db_version');
+
+	if (version_compare($dbVersion, PP_DB_VERSION, '<')) {
+		\pitchprint\functions\updates\db_product_id_medint_int();
+		update_option('pitchprint_db_version', PP_DB_VERSION);
+	}
 }

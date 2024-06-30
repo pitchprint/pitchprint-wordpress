@@ -10,5 +10,6 @@ function define_constants() {
     define('PP_NOES6_JS', 'https://pitchprint.io/rsc/js/noes6.js');
     define('PP_ADMIN_JS', 'https://pitchprint.io/rsc/js/a.wp.js');
     define('PPADMIN_DEF', "var PPADMIN = window.PPADMIN; if (typeof PPADMIN === 'undefined') window.PPADMIN = PPADMIN = { version: '9.0.0', readyFncs: [] };");
+    define('PP_DB_VERSION', '10.3.1');
 }
     
