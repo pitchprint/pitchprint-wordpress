@@ -98,6 +98,11 @@ Check out our [website for more details](https://pitchprint.com)
 
 == Changelog ==
 
+== 10.3.1 =
+Split core functions into separate folders
+Updated support for WooCommerce High-Performance order storage feature
+Update to the database table field for storing customizations
+
 == 10.2.2 =
 Tested up to WordPress 6.3
 

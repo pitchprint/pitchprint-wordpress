@@ -22,7 +22,7 @@ function init_hooks() {
         add_action('woocommerce_after_cart',  'pitchprint\\functions\\front\\get_cart_action');
         add_action('woocommerce_after_checkout_form',  'pitchprint\\functions\\front\\get_cart_action');
         add_action('woocommerce_before_shop_loop', 'pitchprint\\functions\\front\\general\\add_cat_script');
-        add_action('woocommerce_checkout_create_order_line_item', 'pitchprint\\functions\\general\\add_custom_meta_to_order_items', 10, 4);
+        // add_action('woocommerce_checkout_create_order_line_item', 'pitchprint\\functions\\general\\add_custom_meta_to_order_items', 10, 4);
         add_action('wp_ajax_nopriv_pitch_print_save_project', 'pitchprint\\functions\\general\\session_save');
         add_action('wp_ajax_pitch_print_save_project', 'pitchprint\\functions\\general\\session_save');
 
