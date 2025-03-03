@@ -1,9 +1,9 @@
 === Plugin Name ===
-Contributors: flexcubed
+Contributors: pitchprint
 Tags: customizer, photo album, print shop, web2print, gift print, diy print, product customizer, web-to-print, print software, print solution, HTML5 WYSIWYG, t-shirt designer, wysiwyg print editor, business card
 Requires at least: 3.8
-Tested up to: 6.4
-Stable tag: 10.3.1
+Tested up to: 6.7
+Stable tag: 11.0.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -28,7 +28,7 @@ Please learn more about this service from our site: [PitchPrint.com](https://pit
 * WordPress 3.8 or greater
 * PHP version 5.2.4 or greater
 * MySQL version 5.0 or greater
-* WooCommerce 3.0.*
+* WooCommerce 4.0.*
 
 This plugin requires you to have WooCommerce installed. You can download [WooCommerce here:](http://www.woothemes.com/woocommerce) or install via the plugins section of your WordPress installation.
 

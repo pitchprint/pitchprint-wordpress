@@ -1,5 +1,5 @@
 <?php
-	require_once('../../wp-load.php');
+	require_once('./wp-load.php');
 	
 	$ids = json_decode($_GET['ids']);
 	if(!is_array($ids)) die();
@@ -14,7 +14,8 @@
 	echo json_encode(array(
 		'urls'=>$y,
 		'designs'=>$x,
-		'apiKey'=>get_option('ppa_api_key')
+		'apiKey'=>get_option('ppa_api_key'),
+		'adminUrl'=>admin_url('admin-ajax.php')
 	));
 	
 	die();
