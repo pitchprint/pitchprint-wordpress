@@ -26,6 +26,7 @@
 							$previews = '';
 							$num_pages = $pitchprint_customization['numPages'];
 							$distiller = $pitchprint_customization['distiller'];
+
 							for ($i = 0; $i < $num_pages; $i++) {
 								$previews .= '<img src="' . PITCHPRINT_PREVIEWS_BASE . $project_id . '_' . ($i + 1) . '.jpg" width="180px; margin-right:10px;"/>';
 							}
@@ -38,8 +39,7 @@
 									<div>
 										<a target="_blank" href="'. $distiller . '/' . $project_id .'">• Download PDF</a><br/>
 										<a target="_blank" href="https://png.pitchprint.com/'. $project_id .'">• Download PNG</a><br/>
-										<a target="_blank" href="https://jpg.pitchprint.com/'. $project_id .'">• Download JPEG</a><br/>
-										<a target="_blank" href="https://tiff.pitchprint.com/'. $project_id .'">• Download TIFF</a><br/>
+										<a target="_blank" href="https://jpeg.pitchprint.com/'. $project_id .'">• Download JPEG</a><br/>
 										<a target="_blank" href="https://admin.pitchprint.com/projects#'. $project_id .'">• Modify Project</a>
 									</div>
 								</div>';
@@ -69,41 +69,6 @@
 		
 		return $formatted_meta;
 	}
-
-	// this is for backward compatibility v1, to display old orders pre-installing this version
-	function pitchprint_filter_wc_order_item_display_meta_value( $display_value, $meta ) {
-		if ( $meta->key === '_w2p_set_option' ) {
-			$pda_data = json_decode($display_value, true);
-			
-			$auth_key = get_option('pitchprint_secret_key');
-
-			if (!empty($pda_data['projectId'])) {
-				$hash = md5( $pda_data['projectId'] . $auth_key );
-				$post_fix = $pda_data['projectId'] . '!' . $hash;
-
-				return '
-					<div class="pitchprint_order_meta" style="display: flex;">
-						<div onclick="pda_show_preview(this)" data-project-id="' . $pda_data["projectId"] . '" class="pda_show_preview" style="margin-right: 10px;">
-							<img src="' . $pda_data['previews'][0]['url'] . '" width="180px"/>
-							<div>
-								<svg xmlns="http://www.w3.org/2000/svg" class="icon-tabler icon-tabler-search" width="22px" height="22px" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round" data-v-09078359="">   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>   <circle cx="10" cy="10" r="7"></circle>   <line x1="21" y1="21" x2="15" y2="15"></line> </svg>
-							</div>
-						</div>
-						<div>
-							<a target="_blank" href="https://pdf.print.app/'. $post_fix .'">Download PDF</a><br/>
-							<a target="_blank" href="https://png.print.app/'. $post_fix .'">Download PNG</a><br/>
-							<a target="_blank" href="https://jpg.print.app/'. $post_fix .'">Download JPEG</a><br/>
-							<a target="_blank" href="https://tiff.print.app/'. $post_fix .'">Download TIFF</a><br/>
-							<a target="_blank" href="https://admin.print.app/projects/'. $pda_data['projectId'] .'">Modify Project</a>
-						</div>
-					</div>';
-			} else if (!empty($pda_data['form'])) {
-				print_r($pda_data);
-			}
-		}
-		return $display_value;  
-	}
-
 
 	function order_status_completed($order_id, $status_from, $status_to) {
 		$pp_webhookUrl = false;

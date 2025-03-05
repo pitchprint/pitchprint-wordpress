@@ -46,7 +46,10 @@
             // add the customization data to the order item
             add_filter('woocommerce_checkout_create_order_line_item', 'pitchprint\\functions\\front\\add_order_item_meta', 70, 2);
             
-            add_action('woocommerce_before_shop_loop','pitchprint\\functions\\front\\add_cat_script');
+            add_action('woocommerce_before_shop_loop', 'pitchprint\\functions\\front\\add_cat_script');
+            
+            // my recent order page..
+            add_action('woocommerce_before_my_account', 'pitchprint\\functions\\front\\my_recent_order');
         }
 
         add_action('init', 'pitchprint\\functions\\general\\set_cookie');
