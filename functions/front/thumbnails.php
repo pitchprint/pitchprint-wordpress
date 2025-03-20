@@ -3,9 +3,6 @@
     namespace pitchprint\functions\front;
 
     function cart_item_thumbnail($product_thumbnail, $cart_item_data, $cart_item_key) {
-        error_log("Cart item thumbnail filter triggered!");
-        die();
-
         if (!empty($cart_item_data[PITCHPRINT_CUSTOMIZATION_KEY])) {
             $project_id = $cart_item_data[PITCHPRINT_CUSTOMIZATION_KEY]['projectId'];
 

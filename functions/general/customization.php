@@ -23,6 +23,7 @@
         $user_token = get_user_token();
         $transient_key = 'pitchprint_' . $user_token . '_' . $product_id;
     
+        delete_transient($transient_key);
         $result = set_transient($transient_key, $customization_data, PITCHPRINT_CUSTOMIZATION_DURATION);
         return $result !== FALSE ? $transient_key : FALSE;
     }
