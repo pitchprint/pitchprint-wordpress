@@ -27,6 +27,10 @@
 							$num_pages = $pitchprint_customization['numPages'];
 							$distiller = $pitchprint_customization['distiller'];
 
+							if (!isset($distiller) || empty($distiller)) {
+								$distiller = 'https://pdf.pitchprint.com';
+							}
+
 							for ($i = 0; $i < $num_pages; $i++) {
 								$previews .= '<img src="' . PITCHPRINT_PREVIEWS_BASE . $project_id . '_' . ($i + 1) . '.jpg" width="180px; margin-right:10px;"/>';
 							}
