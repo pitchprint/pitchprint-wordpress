@@ -6,12 +6,17 @@
 
     function save_project_sess() {
 
-        if (!isset($_POST['values']) || empty($_POST['values'])) {
-            wp_send_json_error('No customization data provided');
-        }
-
         if (!isset($_POST['productId']) || empty($_POST['productId'])) {
             wp_send_json_error('No product ID provided');
+        }
+
+        if (isset($_POST['clear']) && $_POST['clear'] == 'true') {
+            General\delete_customization_data($_POST['productId']);
+            wp_send_json_success('Customization data cleared successfully.');
+        }
+
+        if (!isset($_POST['values']) || empty($_POST['values'])) {
+            wp_send_json_error('No customization data provided');
         }
 
         $value = json_decode(urldecode($_POST['values']), true);

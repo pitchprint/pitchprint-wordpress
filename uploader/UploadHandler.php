@@ -10,6 +10,8 @@
  * http://www.opensource.org/licenses/MIT
  */
 
+error_reporting(E_ERROR | E_PARSE);
+
 class UploadHandler
 {
 
@@ -517,7 +519,7 @@ class UploadHandler
             if (!is_dir($version_dir)) {
                 mkdir($version_dir, $this->options['mkdir_mode'], true);
             }
-            $new_file_path = $version_dir.'/'.$file_name;
+            $new_file_path = $version_dir . '/' . $file_name;
         } else {
             $new_file_path = $file_path;
         }
