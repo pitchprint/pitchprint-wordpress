@@ -44,6 +44,7 @@
 										<a target="_blank" href="'. $distiller . '/' . $project_id .'">• Download PDF</a><br/>
 										<a target="_blank" href="https://png.pitchprint.com/'. $project_id .'">• Download PNG</a><br/>
 										<a target="_blank" href="https://jpeg.pitchprint.com/'. $project_id .'">• Download JPEG</a><br/>
+										<a target="_blank" href="https://tiff.pitchprint.com/'. $project_id .'">• Download TIFF</a><br/>
 										<a target="_blank" href="https://admin.pitchprint.com/projects#'. $project_id .'">• Modify Project</a>
 									</div>
 								</div>';
