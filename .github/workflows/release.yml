@@ -15,6 +15,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+
+      - name: Install Subversion
+        run: sudo apt-get update && sudo apt-get install -y subversion
   
       # - name: Update files with new version and changes from changelog
       #   env:
