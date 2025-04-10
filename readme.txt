@@ -98,6 +98,11 @@ Check out our [website for more details](https://pitchprint.com)
 
 == Changelog ==
 
+== 11.0.0 =
+Major upgrade.
+We implemented WordPress Transients API for saving and retrieving customizations with browser localstorage fallback
+Tested up to WordPress 6.7
+
 == 10.3.1 =
 Split core functions into separate folders
 Updated support for WooCommerce High-Performance order storage feature
