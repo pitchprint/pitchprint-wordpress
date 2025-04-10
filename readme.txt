@@ -3,7 +3,7 @@ Contributors: pitchprint
 Tags: customizer, photo album, print shop, web2print, gift print, diy print, product customizer, web-to-print, print software, print solution, HTML5 WYSIWYG, t-shirt designer, wysiwyg print editor, business card
 Requires at least: 3.8
 Tested up to: 6.7
-Stable tag: 10.3.1
+Stable tag: 11.0.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -97,6 +97,11 @@ Check out our [website for more details](https://pitchprint.com)
 4. Admin settings.
 
 == Changelog ==
+
+== 11.0.0 =
+Major upgrade.
+We implemented WordPress Transients API for saving and retrieving customizations with browser localstorage fallback
+Tested up to WordPress 6.7
 
 == 10.3.1 =
 Split core functions into separate folders
