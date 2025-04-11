@@ -9,6 +9,20 @@
 		
 	}
 
+	function legacy_order_value() {
+		global $post, $woocommerce;
+
+		$cred = \pitchprint\functions\general\fetch_credentials();
+		wp_enqueue_script('pitchprint_admin', 'https://pitchprint.io/rsc/js/a.wp.js');
+		wc_enqueue_js( "var PPADMIN = window.PPADMIN; if (typeof PPADMIN === 'undefined') window.PPADMIN = PPADMIN = { version: '9.0.0', readyFncs: [] };" . "
+			PPADMIN.vars = {
+				credentials: { timestamp: '" . $cred['timestamp'] . "', apiKey: '" . get_option('ppa_api_key') . "', signature: '" . $cred['signature'] . "'}
+			};
+			PPADMIN.readyFncs.push('init');
+			if (typeof PPADMIN.start !== 'undefined') PPADMIN.start();
+		");
+	}
+
 	function format_pitchprint_order_value($formatted_meta, $order_item) {
 
 		foreach ($formatted_meta as $meta) {

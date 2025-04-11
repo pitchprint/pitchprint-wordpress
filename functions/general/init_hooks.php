@@ -30,6 +30,8 @@
             // extract and inject the customization data into the order item
             add_filter('woocommerce_order_item_get_formatted_meta_data', 'pitchprint\\functions\\admin\\format_pitchprint_order_value', 20, 2);
 
+            add_action('woocommerce_admin_order_data_after_order_details', 'pitchprint\\functions\\admin\\legacy_order_value');
+
         } else if (\pitchprint\functions\general\request_type('frontend')) {
 
             // add the pitchprint header files
