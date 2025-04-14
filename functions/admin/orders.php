@@ -126,7 +126,7 @@
 					'name' => $item_data['name'],
 					'id' => $item_data['product_id'],
 					'qty' => $item_data['quantity'],
-					'pitchprint' => wc_get_order_item_meta($item_key, '_w2p_set_option')
+					'pitchprint' => wc_get_order_item_meta($item_key, PITCHPRINT_CUSTOMIZATION_KEY)
 				);
 			}
 	
