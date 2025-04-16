@@ -4,9 +4,10 @@
 
 	function format_pitchprint_order_key($display_value, $meta, $order_item) {
 		
-		if ($meta->key === 'preview' || $meta->key === '_w2p_set_option') return 'PitchPrint Customization';
+		if ($meta->key === 'preview' || $meta->key === '_w2p_set_option') {
+			return did_action('woocommerce_email_order_details') ? '' : 'PitchPrint Customization';
+		}
 		return $display_value;
-		
 	}
 
 	function legacy_order_value() {
@@ -24,6 +25,10 @@
 	}
 
 	function format_pitchprint_order_value($formatted_meta, $order_item) {
+		// Check if the current request is for an email
+		if (did_action('woocommerce_email_order_details')) {
+			return $formatted_meta;
+		}
 
 		foreach ($formatted_meta as $meta) {
 			if ($meta->key === PITCHPRINT_CUSTOMIZATION_PREVIEWS_KEY) {
@@ -44,6 +49,8 @@
 							if (!isset($distiller) || empty($distiller)) {
 								$distiller = 'https://pdf.pitchprint.com';
 							}
+
+							if ($num_pages > 4) $num_pages = 4;
 
 							for ($i = 0; $i < $num_pages; $i++) {
 								$previews .= '<img src="' . PITCHPRINT_PREVIEWS_BASE . $project_id . '_' . ($i + 1) . '.jpg" width="180px; margin-right:10px;"/>';

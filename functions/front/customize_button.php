@@ -45,9 +45,13 @@
 		$project_data = General\get_customization_data($post->ID);
 
 		if (isset($project_data) && $project_data !== FALSE) {
-			$project_id = $project_data['projectId'];
-			$mode		= isset($project_data['mode']) ? $project_data['mode'] : 'edit';
-			$previews	= isset($project_data['numPages']) ? $project_data['numPages'] : '';
+			if (isset($project_data['type']) && $project_data['type'] == 'u') {
+				$mode = 'upload';
+			} else {
+				$project_id = isset($project_data['projectId']) ? $project_data['projectId'] : '';
+				$mode		= isset($project_data['mode']) ? $project_data['mode'] : 'edit';
+				$previews	= isset($project_data['numPages']) ? $project_data['numPages'] : '';
+			}
 			$now_value = urlencode(json_encode($project_data));
 		}
 
@@ -64,7 +68,7 @@
 					customizationRequired: {$customization_required},
 					pdfDownload: {$pdf_download},
 					useDesignPrevAsProdImage: {$use_design_preview},
-					uploadUrl: '" . plugins_url('pitchprint/uploader/') . "',
+					uploadUrl: '" . site_url('pitchprint/uploader/') . "',
 					userId: '{$user_id}',
 					langCode: '{$lang_code}',
 					enableUpload: {$set_option[1]},
