@@ -17,73 +17,74 @@ The platform integrates seamlessly with WordPress + WooCommerce, Shopify, OpenCa
 
 Now your customers can personalize their Business Cards, T-shirts, Greeting Cards, Wedding Invitations, Direct Mail, Mugs, Banners, Wall Papers, Signage, Billboard, Labels, Stickers, Gift Bags and many print products with easy to use templates and resources.
 
-Using a web-to-print (web2print) plugin offers several benefits to your customers, enhancing their experience and providing added value. Here are some key benefits of using a web2print plugin from a customer’s perspective:· 
 
-**Convenience** - Design and order prints from anywhere, avoiding physical store visits or designer meetings.
+== Benefits of a Web-to-Print Plugin for Your Customers ==
 
-**Time Savings** - Intuitive interface speeds up design creation, reducing traditional design method time.
+* **Convenience** - Design and order prints from anywhere, avoiding physical store visits or designer meetings.
 
-**Control and Personalisation** - Full design process control for personalised, unique prints.
+* **Time Savings** - Intuitive interface speeds up design creation, reducing traditional design method time.
 
-**No Design Experience Required** - User-friendly for all, regardless of design knowledge.
+* **Control and Personalisation** - Full design process control for personalised, unique prints.
 
-**Real-Time Preview** - View designs before ordering for satisfaction assurance.
+* **No Design Experience Required** - User-friendly for all, regardless of design knowledge.
 
-**Cost-Effective** - Experiment without added costs, exploring design options.
+* **Real-Time Preview** - View designs before ordering for satisfaction assurance.
 
-**Access to Templates** - Start with diverse templates for added convenience.
+* **Cost-Effective** - Experiment without added costs, exploring design options.
 
-**Flexibility in Ordering** - Order anytime, day or night, without business hour constraints.
+* **Access to Templates** - Start with diverse templates for added convenience.
 
-**Reduced Errors** - User-friendly interface minimises design mistakes.
+* **Flexibility in Ordering** - Order anytime, day or night, without business hour constraints.
 
-**Easy Reordering** - Conveniently reorder past designs.Using a web2print plugin empowers customers with convenience, customization, and control, elevating their print ordering process.
+* **Reduced Errors** - User-friendly interface minimises design mistakes.
+
+* **Easy Reordering** - Conveniently reorder past designs.Using a web2print plugin empowers customers with convenience, customization, and control, elevating their print ordering process.
 
 
-**Benefits for Print Store Merchants**
+== Benefits for Print Store Merchants ==
 
 With its array of powerful features, PitchPrint product customiser can revolutionise your printing services and help you stand out from your competitors while driving revenue growth. Here’s how PitchPrint can benefit your business:· 
 
-**Streamlined Design Process:** With PitchPrint, users can design and customize their prints online, reducing the need for back-and-forth communication between clients and designers.
+* **Streamlined Design Process:** With PitchPrint, users can design and customize their prints online, reducing the need for back-and-forth communication between clients and designers.
 
-**Increased Efficiency:** Automate design and print processes for quicker turnaround and improved productivity.
+* **Increased Efficiency:** Automate design and print processes for quicker turnaround and improved productivity.
 
-**Enhanced Customer Experience:** Interactive design experience for custom creations, allowing them to create custom designs that reflect their unique style and preferences. This will foster customer satisfaction and loyalty.
+* **Enhanced Customer Experience:** Interactive design experience for custom creations, allowing them to create custom designs that reflect their unique style and preferences. This will foster customer satisfaction and loyalty.
 
-**Cost-Effective Solution:** Offer custom printing without costly equipment or software investments.
+* **Cost-Effective Solution:** Offer custom printing without costly equipment or software investments.
 
-**Accessible Design:** User-friendly interface enables easy navigation even for those with limited design experience, making custom printing accessible to all.
+* **Accessible Design:** User-friendly interface enables easy navigation even for those with limited design experience, making custom printing accessible to all.
 
-**Customizable:** Seamlessly integrate the plugin with existing branding and website for enhanced brand identity.
+* **Customizable:** Seamlessly integrate the plugin with existing branding and website for enhanced brand identity.
 
 
-**Features and Functionality of PitchPrint**
+== Features and Functionality of PitchPrint ==
 
-**Design Assets** - Create your own templates or import some from our store. Design resources such as images, backgrounds, colours, text arts, fonts etc.
+* **Design Assets** - Create your own templates or import some from our store. Design resources such as images, backgrounds, colours, text arts, fonts etc.
 
-**Data Form Module** - Displays a Quick-edit Form where your customers can simply type in their details and be done with. It is suitable for quick edits without having to manipulate directly on the canvas.
+* **Data Form Module** - Displays a Quick-edit Form where your customers can simply type in their details and be done with. It is suitable for quick edits without having to manipulate directly on the canvas.
 
-**Template Colour Module** - Change the template image colour of a design product without going outside of the editor.
+* **Template Colour Module** - Change the template image colour of a design product without going outside of the editor.
 
-**Page Loader** - Load additional pages into designs from an assigned source design. Perfect for Magazines, Menu, Programmes, Business Cards, Swatch Cards, Direct Mail Marketing, Brochures etc.
+* **Page Loader** - Load additional pages into designs from an assigned source design. Perfect for Magazines, Menu, Programmes, Business Cards, Swatch Cards, Direct Mail Marketing, Brochures etc.
 
-**Display Modes** - Configure how the application appears in your product page with our 3 different display mode options to suit any of your product needs.
+* **Display Modes** - Configure how the application appears in your product page with our 3 different display mode options to suit any of your product needs.
 
-**Layouts** - Enabling users to create different layout and assign them to different sets of designs based on your unique website need basis.
+* **Layouts** - Enabling users to create different layout and assign them to different sets of designs based on your unique website need basis.
 
-**Canvas Adjuster** - Large prints come in different shapes and sizes, with this module you can adjust the canvas dimensions before or during designing. You can opt for custom dimensions or pick from a list of pre-set values.
+* **Canvas Adjuster** - Large prints come in different shapes and sizes, with this module you can adjust the canvas dimensions before or during designing. You can opt for custom dimensions or pick from a list of pre-set values.
 
-**Smart Sizes** - Create multiple variations of a single design by varying the canvas size and elements’ properties to come up with entirely different looking layouts. i.e. Landscape, Portrait, Square in seconds saving you time to focus on what matters, the customers!
+* **Smart Sizes** - Create multiple variations of a single design by varying the canvas size and elements’ properties to come up with entirely different looking layouts. i.e. Landscape, Portrait, Square in seconds saving you time to focus on what matters, the customers!
 
-**High Res** - You get high resolution print-ready PDF with crisp, clean vector elements in either CMYK with SPOT colors or RGB format. In addition, you can download files as JPEG or PNG.
+* **High Res** - You get high resolution print-ready PDF with crisp, clean vector elements in either CMYK with SPOT colors or RGB format. In addition, you can download files as JPEG or PNG.
 
-**Variable Data** - An API that allows you to programmatically create multiple print-ready PDF files without launching the design editor. Perfect for business cards, direct mail marketing etc.
+* **Variable Data** - An API that allows you to programmatically create multiple print-ready PDF files without launching the design editor. Perfect for business cards, direct mail marketing etc.
 
-**Styling** - From the language to the themes and layout, you can customize the app to blend right into your store’s look and feel. Include your own CSS or Custom JavaScript code to add functionalities. More so, you can edit the HTML to remove features you don’t need.
+* **Styling** - From the language to the themes and layout, you can customize the app to blend right into your store’s look and feel. Include your own CSS or Custom JavaScript code to add functionalities. More so, you can edit the HTML to remove features you don’t need.
 
-**Google Fonts** - Search and use Google Fonts directly in the design editor. Add Google fonts or upload your own TTF or OTF, the choice is all yours!!!
+* **Google Fonts** - Search and use Google Fonts directly in the design editor. Add Google fonts or upload your own TTF or OTF, the choice is all yours!!!
 
-**Pixabay** - We have also integrated Pixabay which is a collection of royalty free photos and illustrations. And so much more!!!
+* **Pixabay** - We have also integrated Pixabay which is a collection of royalty free photos and illustrations. And so much more!!!
 
 
 Please learn more about this service from our site: [PitchPrint.com](https://pitchprint.com)
