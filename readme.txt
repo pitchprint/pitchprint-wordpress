@@ -63,49 +63,27 @@ With its array of powerful features, PitchPrint product customiser can revolutio
 
 **Data Form Module** - Displays a Quick-edit Form where your customers can simply type in their details and be done with. It is suitable for quick edits without having to manipulate directly on the canvas.
 
-!(Data Form)[https://pitchprint.com/assets/img/use/data-form-new.png]
-
 **Template Colour Module** - Change the template image colour of a design product without going outside of the editor.
 
-!(Template Color Module)[https://pitchprint.com/assets/img/use/template-color-module.png]
-
 **Page Loader** - Load additional pages into designs from an assigned source design. Perfect for Magazines, Menu, Programmes, Business Cards, Swatch Cards, Direct Mail Marketing, Brochures etc.
-
-!(Page Loader Module)[https://pitchprint.com/assets/img/use/page-loader.png]
 
 **Display Modes** - Configure how the application appears in your product page with our 3 different display mode options to suit any of your product needs.
 
 **Layouts** - Enabling users to create different layout and assign them to different sets of designs based on your unique website need basis.
 
-!(Layouts)[https://pitchprint.com/assets/img/use/layout.png]
-
 **Canvas Adjuster** - Large prints come in different shapes and sizes, with this module you can adjust the canvas dimensions before or during designing. You can opt for custom dimensions or pick from a list of pre-set values.
-
-!(Canvas Adjuster)[https://pitchprint.com/assets/img/use/canvas-adjuster-new.png]
 
 **Smart Sizes** - Create multiple variations of a single design by varying the canvas size and elements’ properties to come up with entirely different looking layouts. i.e. Landscape, Portrait, Square in seconds saving you time to focus on what matters, the customers!
 
-!(Smart Sizes)[https://pitchprint.com/assets/img/use/smart-resize.png]
-
 **High Res** - You get high resolution print-ready PDF with crisp, clean vector elements in either CMYK with SPOT colors or RGB format. In addition, you can download files as JPEG or PNG.
-
-!(High Res)[https://pitchprint.com/assets/img/use/transp-high-res.png]
 
 **Variable Data** - An API that allows you to programmatically create multiple print-ready PDF files without launching the design editor. Perfect for business cards, direct mail marketing etc.
 
-!(Variable Data)[https://pitchprint.com/assets/img/use/spark-new.png]
-
 **Styling** - From the language to the themes and layout, you can customize the app to blend right into your store’s look and feel. Include your own CSS or Custom JavaScript code to add functionalities. More so, you can edit the HTML to remove features you don’t need.
-
-!(Styling)[https://pitchprint.com/assets/img/use/styling.png]
 
 **Google Fonts** - Search and use Google Fonts directly in the design editor. Add Google fonts or upload your own TTF or OTF, the choice is all yours!!!
 
-!(Fonts)[https://pitchprint.com/assets/img/use/fonts.gif]
-
 **Pixabay** - We have also integrated Pixabay which is a collection of royalty free photos and illustrations. And so much more!!!
-
-!(Pixabay)[https://pitchprint.com/assets/img/use/pixabay-lrg.gif]
 
 
 Please learn more about this service from our site: [PitchPrint.com](https://pitchprint.com)
