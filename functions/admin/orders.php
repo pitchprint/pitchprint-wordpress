@@ -104,19 +104,25 @@
 	
 		foreach ( $items as $item ) {
 			foreach ( $item->get_meta_data() as $meta ) {
-				if ( $meta->key === '_w2p_set_option' ) {
-					$pp_meta = json_decode( urldecode( $meta->value ) );
-					if ( $user_id && $pp_meta->userId === 'guest' ) {
-						$should_update_user_id = true;
+				if ( $meta->key === PITCHPRINT_CUSTOMIZATION_KEY ) {
+					$pitchprint_customization = $meta->value;
+
+					if ( is_string($pitchprint_customization) ) {
+						$pitchprint_customization = json_decode( $pitchprint_customization, true );
 					}
-					$project_ids[] = $pp_meta->projectId;
+
+					if ( !empty($pitchprint_customization['projectId']) ) {
+						if ( $user_id && $pitchprint_customization['userId'] === 'guest' ) {
+							$should_update_user_id = true;
+						}
+						$project_ids[] = $pitchprint_customization['projectId'];
+					}
 				}
 			}
 		}
-	
-		if ( count( $project_ids ) ) {
+
+		if ( count($project_ids) ) {
 			$auth_key = get_option( 'ppa_secret_key' );
-	
 			// Append order ID
 			$response1 = wp_remote_post( 'https://api.pitchprint.com/runtime/append-project-order-id', [
 				'headers' => [ 'Authorization' => $auth_key ],
@@ -126,7 +132,7 @@
 				] ),
 				'method'  => 'POST',
 			] );
-	
+
 			if ( is_wp_error( $response1 ) || wp_remote_retrieve_response_code( $response1 ) !== 200 ) {
 				error_log( '[PitchPrint] Failed to append order ID to projects: ' . print_r( $response1, true ) );
 			}
@@ -141,7 +147,7 @@
 					] ),
 					'method'  => 'POST',
 				] );
-	
+
 				if ( is_wp_error( $response2 ) || wp_remote_retrieve_response_code( $response2 ) !== 200 ) {
 					error_log( '[PitchPrint] Failed to append user ID to projects: ' . print_r( $response2, true ) );
 				}
