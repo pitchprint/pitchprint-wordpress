@@ -63,6 +63,7 @@
         add_action('wp_ajax_pitch_print_reset_project', 'pitchprint\\functions\\front\\reset_project_sess');
 
         add_action('woocommerce_order_status_changed', 'pitchprint\\functions\\admin\\order_status_completed',10,3);
+        add_action('woocommerce_new_order', 'pitchprint\\functions\\admin\\handle_new_order',10,2);
 
         // add the customization info to the order email
         add_action('woocommerce_email_order_details', 'pitchprint\\functions\\general\\order_email', 10, 4);

@@ -5,7 +5,9 @@
     function set_cookie() {
         if (!isset($_COOKIE[PITCHPRINT_CUSTOMIZATION_KEY])) {
             $token = bin2hex(random_bytes(16));
-            setcookie(PITCHPRINT_CUSTOMIZATION_KEY, $token, time() + PITCHPRINT_CUSTOMIZATION_DURATION, '/');
+            if (!headers_sent()) {
+                setcookie(PITCHPRINT_CUSTOMIZATION_KEY, $token, time() + PITCHPRINT_CUSTOMIZATION_DURATION, '/');
+            }
         }
     }
 
@@ -15,7 +17,9 @@
     
         // Generate a random token for the user (guest or signed-in)
         $token = bin2hex(random_bytes(16));
-        setcookie(PITCHPRINT_CUSTOMIZATION_KEY, $token, time() + PITCHPRINT_CUSTOMIZATION_DURATION, '/');
+        if (!headers_sent()) {
+            setcookie(PITCHPRINT_CUSTOMIZATION_KEY, $token, time() + PITCHPRINT_CUSTOMIZATION_DURATION, '/');
+        }
         return $token;
     }
 
@@ -42,4 +46,3 @@
         delete_transient($transient_key);
         return TRUE;
     }
-    
