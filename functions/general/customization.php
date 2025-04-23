@@ -25,24 +25,61 @@
 
     function save_customization_data($product_id, $customization_data) {
         $user_token = get_user_token();
-        $transient_key = 'pitchprint_' . $user_token . '_' . $product_id;
-    
-        delete_transient($transient_key);
-        $result = set_transient($transient_key, $customization_data, PITCHPRINT_CUSTOMIZATION_DURATION);
-        return $result !== FALSE ? $transient_key : FALSE;
+        $key = 'pitchprint_' . $user_token . '_' . $product_id;
+
+        // Try saving to transient first
+        delete_transient($key);
+        $transient_result = set_transient($key, $customization_data, PITCHPRINT_CUSTOMIZATION_DURATION);
+
+        // Also save to session as a backup
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        $_SESSION[$key] = $customization_data;
+
+        // Return the key if transient save was successful, otherwise FALSE
+        return $transient_result !== FALSE ? $key : FALSE;
     }
 
     function get_customization_data($product_id) {
         $user_token = get_user_token();
-        $transient_key = 'pitchprint_' . $user_token . '_' . $product_id;
+        $key = 'pitchprint_' . $user_token . '_' . $product_id;
 
-        return get_transient($transient_key);
+        // Try getting from transient first
+        $data = get_transient($key);
+
+        if ($data !== false) {
+            return $data;
+        }
+
+        // If transient failed or expired, try getting from session
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        if (isset($_SESSION[$key])) {
+            // Optionally, restore the transient if found in session
+            // set_transient($key, $_SESSION[$key], PITCHPRINT_CUSTOMIZATION_DURATION);
+            return $_SESSION[$key];
+        }
+
+        return false; // Return false if not found in either
     }
 
     function delete_customization_data($product_id) {
         $user_token = get_user_token();
-        $transient_key = 'pitchprint_' . $user_token . '_' . $product_id;
-    
-        delete_transient($transient_key);
+        $key = 'pitchprint_' . $user_token . '_' . $product_id;
+
+        // Delete from transient
+        delete_transient($key);
+
+        // Delete from session
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        if (isset($_SESSION[$key])) {
+            unset($_SESSION[$key]);
+        }
+
         return TRUE;
     }

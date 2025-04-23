@@ -3,7 +3,7 @@ Contributors: pitchprint
 Tags: customizer, photo album, print shop, web2print, gift print, diy print, product customizer, web-to-print, print software, print solution, HTML5 WYSIWYG, t-shirt designer, wysiwyg print editor, business card
 Requires at least: 3.8
 Tested up to: 6.7
-Stable tag: 11.0.6
+Stable tag: 11.0.7
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -171,6 +171,10 @@ Check out our [website for more details](https://pitchprint.com)
 10. Photo Print
 
 == Changelog ==
+
+== 11.0.7 =
+Added session as backup for saving and retrieving customizations for sites where other plugins resets transient data
+SVN now includes functions/general/email.php file
 
 == 11.0.6 =
 Fixed Issue with Webhooks
