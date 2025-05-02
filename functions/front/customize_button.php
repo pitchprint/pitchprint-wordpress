@@ -81,6 +81,7 @@
 					apiKey: '" . get_option('ppa_api_key') . "',
 					client: 'wp',
 					productId: '" . $post->ID . "',
+					cookieKey: '" . PITCHPRINT_CUSTOMIZATION_KEY . "',
 					product: {
 						id: '" . $post->ID . "',
 						name: '{$post->post_name}'

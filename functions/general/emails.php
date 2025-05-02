@@ -2,7 +2,7 @@
 
 namespace pitchprint\functions\general;
 
-function order_email(\WC_Order $order, bool $sent_to_admin, bool $plain_text, $email): string {
+function order_email(\WC_Order $order, bool $sent_to_admin, bool $plain_text, $email) {
     $html = '';
     $items = $order->get_items();
 
@@ -28,5 +28,7 @@ function order_email(\WC_Order $order, bool $sent_to_admin, bool $plain_text, $e
         }
     }
 
-    return $html;
+    if (!empty($html)) {
+        echo $html;
+    }
 }

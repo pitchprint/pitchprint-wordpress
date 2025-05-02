@@ -2,29 +2,33 @@
 
     namespace pitchprint\functions\general;
 
-    function set_cookie() {
-        if (!isset($_COOKIE[PITCHPRINT_CUSTOMIZATION_KEY])) {
-            $token = bin2hex(random_bytes(16));
-            if (!headers_sent()) {
-                setcookie(PITCHPRINT_CUSTOMIZATION_KEY, $token, time() + PITCHPRINT_CUSTOMIZATION_DURATION, '/');
-            }
-        }
-    }
-
     function get_user_token() {
         if (isset($_COOKIE[PITCHPRINT_CUSTOMIZATION_KEY]))
             return $_COOKIE[PITCHPRINT_CUSTOMIZATION_KEY];
     
         // Generate a random token for the user (guest or signed-in)
-        $token = bin2hex(random_bytes(16));
         if (!headers_sent()) {
-            setcookie(PITCHPRINT_CUSTOMIZATION_KEY, $token, time() + PITCHPRINT_CUSTOMIZATION_DURATION, '/');
+            $token = bin2hex(random_bytes(16));
+            $cookie_set = setcookie(PITCHPRINT_CUSTOMIZATION_KEY, $token, time() + PITCHPRINT_CUSTOMIZATION_DURATION, '/');
+            
+            if (!$cookie_set) {
+                // Handle error if cookie cannot be set
+                error_log('[PITCHPRINT] Failed to set cookie: ' . PRINT_APP_CUSTOMIZATION_KEY);
+            } else {
+                return $token;
+            }
         }
-        return $token;
     }
 
+    // Sanitize and validate inputs for better security
     function save_customization_data($product_id, $customization_data) {
+        $product_id = absint($product_id); // Ensure product_id is an integer
+        $customization_data = wp_unslash($customization_data); // Remove slashes from input
+        
         $user_token = get_user_token();
+        if (!is_string($user_token) || empty($user_token)) {
+            return false; // Invalid token
+        }
         $key = 'pitchprint_' . $user_token . '_' . $product_id;
 
         // Try saving to transient first
@@ -43,6 +47,9 @@
 
     function get_customization_data($product_id) {
         $user_token = get_user_token();
+        if (!is_string($user_token) || empty($user_token)) {
+            return false; // Invalid token
+        }
         $key = 'pitchprint_' . $user_token . '_' . $product_id;
 
         // Try getting from transient first
@@ -59,7 +66,6 @@
 
         if (isset($_SESSION[$key])) {
             // Optionally, restore the transient if found in session
-            // set_transient($key, $_SESSION[$key], PITCHPRINT_CUSTOMIZATION_DURATION);
             return $_SESSION[$key];
         }
 
@@ -68,6 +74,9 @@
 
     function delete_customization_data($product_id) {
         $user_token = get_user_token();
+        if (!is_string($user_token) || empty($user_token)) {
+            return false; // Invalid token
+        }
         $key = 'pitchprint_' . $user_token . '_' . $product_id;
 
         // Delete from transient

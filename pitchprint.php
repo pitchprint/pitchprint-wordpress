@@ -5,10 +5,10 @@
 * 	Plugin URI: 			https://pitchprint.com
 * 	Description: 			A beautiful web based print customization app for your online store. Integrates with WooCommerce.
 * 	Author: 				PitchPrint, Inc.
-* 	Version: 				11.0.7
+* 	Version: 				11.0.8
 * 	Author URI: 			https://pitchprint.com
 * 	Requires at least: 		3.8
-* 	Tested up to: 			6.7
+* 	Tested up to: 			6.8
 * 	WC requires at least: 	4.0
 * 	WC tested up to: 		9.4
 * 	Requires PHP:      		5.2.4
@@ -46,7 +46,7 @@
 			 * 	PitchPrint version.
 			 * 	@var string
 			*/
-			public $version = '11.0.7';
+			public $version = '11.0.8';
 
 			/**
 			 * 	The single instance of the class.
@@ -121,6 +121,7 @@
 				define('PITCHPRINT_CLIENT_JS', 'https://pitchprint.io/rsc/js/client.js');
     			define('PITCHPRINT_CAT_CLIENT_JS', 'https://pitchprint.io/rsc/js/cat-client.js');
     			define('PITCHPRINT_NOES6_JS', 'https://pitchprint.io/rsc/js/noes6.js');
+    			define('PITCHPRINT_UPDATE_ORDER_ENDPOINT', 'https://api.pitchprint.com/v1/order');
 				define('PITCHPRINT_ADMIN_DEF', "var PPADMIN = window.PPADMIN; if (typeof PPADMIN === 'undefined') window.PPADMIN = PPADMIN = { version: '9.0.0', readyFncs: [] };");
 			}
 			

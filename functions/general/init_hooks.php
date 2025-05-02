@@ -54,8 +54,6 @@
             add_action('woocommerce_before_my_account', 'pitchprint\\functions\\front\\my_recent_order');
         }
 
-        add_action('init', 'pitchprint\\functions\\general\\set_cookie');
-        
         // save project for both authenticated and guest users
         add_action('wp_ajax_nopriv_pitch_print_save_project', 'pitchprint\\functions\\front\\save_project_sess');
         add_action('wp_ajax_pitch_print_save_project', 'pitchprint\\functions\\front\\save_project_sess');
