@@ -57,6 +57,7 @@
 
 		$design_id = $set_option[0];
 		$design_id = apply_filters('set_pitchprint_design_id', $design_id);
+		$upload_path = file_exists(ABSPATH . 'pitchprint/uploader') ? 'pitchprint/uploader/' : 'wp-content/plugins/pitchprint/uploader/';
 
 		wc_enqueue_js("
 			ajaxsearch = undefined;
@@ -68,7 +69,7 @@
 					customizationRequired: {$customization_required},
 					pdfDownload: {$pdf_download},
 					useDesignPrevAsProdImage: {$use_design_preview},
-					uploadUrl: '" . site_url('pitchprint/uploader/') . "',
+					uploadUrl: '" . site_url($upload_path) . "',
 					userId: '{$user_id}',
 					langCode: '{$lang_code}',
 					enableUpload: {$set_option[1]},

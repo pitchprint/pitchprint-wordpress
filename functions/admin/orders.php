@@ -144,89 +144,99 @@
 	
 
 	function order_status_completed($order_id, $status_from, $status_to) {
-    $pp_webhook_url = false;
+		$pp_webhook_url = false;
 
-    if ($status_to === "completed") $pp_webhook_url = 'order-complete';
-    if ($status_to === "processing") $pp_webhook_url = 'order-processing';
+		if ($status_to === "completed") $pp_webhook_url = 'order-complete';
+		if ($status_to === "processing") $pp_webhook_url = 'order-processing';
 
-    if ($pp_webhook_url) {
-        $order = wc_get_order($order_id);
-        $order_data = $order->get_data();
-        $billing = $order_data['billing'];
-        $billingEmail = $billing['email'];
-        $billingPhone = $billing['phone'];
-        $billingName = $billing['first_name'] . " " . $billing['last_name'];
+		if ($pp_webhook_url) {
+			$order = wc_get_order($order_id);
+			$order_data = $order->get_data();
+			$billing = $order_data['billing'];
+			$billingEmail = $billing['email'];
+			$billingPhone = $billing['phone'];
+			$billingName = $billing['first_name'] . " " . $billing['last_name'];
 
-        $addressArr = ['address_1', 'address_2', 'city', 'postcode', 'country'];
-        $billingAddress = '';
-        foreach ($addressArr as $addKey) {
-            if (!empty($billing[$addKey])) {
-                $billingAddress .= $billing[$addKey] . ", ";
-            }
-        }
-        $billingAddress = rtrim($billingAddress, ', ');
+			$addressArr = ['address_1', 'address_2', 'city', 'postcode', 'country'];
+			$billingAddress = '';
+			foreach ($addressArr as $addKey) {
+				if (!empty($billing[$addKey])) {
+					$billingAddress .= $billing[$addKey] . ", ";
+				}
+			}
+			$billingAddress = rtrim($billingAddress, ', ');
 
-        $shippingName = $order_data['shipping']['first_name'] . " " . $order_data['shipping']['last_name'];
-        $shippingAddress = $order->get_formatted_shipping_address();
-        $status = $order_data['status'];
-        $products = $order->get_items();
-        $userId = $order_data['customer_id'];
-        $items = array();
+			$shippingName = $order_data['shipping']['first_name'] . " " . $order_data['shipping']['last_name'];
+			$shippingAddress = $order->get_formatted_shipping_address();
+			$status = $order_data['status'];
+			$products = $order->get_items();
+			$userId = $order_data['customer_id'];
+			$items = array();
 
-        foreach ($products as $item_key => $item_values) {
-            $item_data = $item_values->get_data();
-			$pprint = wc_get_order_item_meta($item_key, PITCHPRINT_CUSTOMIZATION_KEY);
-			if (isset($pprint) && !empty($pprint)) $pprint = json_encode($pprint);
+			foreach ($products as $item_key => $item_values) {
+				$item_data = $item_values->get_data();
+				$pprint = null;
+				foreach ($item_values->get_meta_data() as $meta) {
+					if ($meta->key === PITCHPRINT_CUSTOMIZATION_KEY) {
+						$pitchprint_customization = $meta->value;
+						if (is_string($pitchprint_customization)) {
+							$pitchprint_customization = json_decode($pitchprint_customization, true);
+						}
+						if (!empty($pitchprint_customization)) {
+							$pprint = json_encode($pitchprint_customization);
+						}
+						break;
+					}
+				}
+				$items[] = array(
+					'name' => $item_data['name'],
+					'id' => $item_data['product_id'],
+					'qty' => $item_data['quantity'],
+					'pitchprint' => $pprint
+				);
+			}
 
-            $items[] = array(
-                'name' => $item_data['name'],
-                'id' => $item_data['product_id'],
-                'qty' => $item_data['quantity'],
-                'pitchprint' => $pprint
-            );
-        }
+			// If empty Pitchprint value, then we won't trigger the webhook.
+			$should_send = false;
+			foreach ($items as $item) {
+				if (!empty($item['pitchprint'])) {
+					$should_send = true;
+					break;
+				}
+			}
 
-        // If empty Pitchprint value, then we won't trigger the webhook.
-        $should_send = false;
-        foreach ($items as $item) {
-            if (!empty($item['pitchprint'])) {
-                $should_send = true;
-                break;
-            }
-        }
+			if ($should_send) {
+				$cred = \pitchprint\functions\general\fetch_credentials();
+				$opts = array(
+					'products' => json_encode($items),
+					'client' => 'wp',
+					'billingEmail' => $billingEmail,
+					'billingPhone' => $billingPhone,
+					'billingName' => $billingName,
+					'billingAddress' => $billingAddress,
+					'shippingName' => $shippingName,
+					'shippingAddress' => $shippingAddress,
+					'orderId' => $order_id,
+					'customer' => $userId,
+					'status' => $status,
+					'apiKey' => get_option('ppa_api_key'),
+					'signature' => $cred['signature'],
+					'timestamp' => $cred['timestamp']
+				);
 
-        if ($should_send) {
-            $cred = \pitchprint\functions\general\fetch_credentials();
-            $opts = array(
-                'products' => json_encode($items),
-                'client' => 'wp',
-                'billingEmail' => $billingEmail,
-                'billingPhone' => $billingPhone,
-                'billingName' => $billingName,
-                'billingAddress' => $billingAddress,
-                'shippingName' => $shippingName,
-                'shippingAddress' => $shippingAddress,
-                'orderId' => $order_id,
-                'customer' => $userId,
-                'status' => $status,
-                'apiKey' => get_option('ppa_api_key'),
-                'signature' => $cred['signature'],
-                'timestamp' => $cred['timestamp']
-            );
+				$response = wp_remote_post("https://api.pitchprint.io/runtime/$pp_webhook_url", array(
+					'headers' => array(
+						'Content-Type' => 'application/json'
+					),
+					'body' => json_encode($opts),
+					'method' => 'POST',
+					'data_format' => 'body',
+					'timeout' => 20
+				));
 
-            $response = wp_remote_post("https://api.pitchprint.io/runtime/$pp_webhook_url", array(
-                'headers' => array(
-                    'Content-Type' => 'application/json'
-                ),
-                'body' => json_encode($opts),
-                'method' => 'POST',
-                'data_format' => 'body',
-                'timeout' => 20
-            ));
-
-            if (is_wp_error($response) || wp_remote_retrieve_response_code($response) !== 200) {
-                error_log('[PitchPrint] Webhook failed: ' . print_r($response, true));
-            }
-        }
-    }
-}
+				if (is_wp_error($response) || wp_remote_retrieve_response_code($response) !== 200) {
+					error_log('[PitchPrint] Webhook failed: ' . print_r($response, true));
+				}
+			}
+		}
+	}
