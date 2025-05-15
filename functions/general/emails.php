@@ -18,7 +18,7 @@ function order_email(\WC_Order $order, bool $sent_to_admin, bool $plain_text, $e
         $distiller = $pitchprint_customization['distiller'] ?? 'https://pdf.pitchprint.com';
 
         for ($i = 0; $i < $num_pages; $i++) {
-            $html .= '<tr><td colspan="2" style="text-align:left; padding: 10px 0;"><img src="' . PITCHPRINT_PREVIEWS_BASE . $project_id . '_' . ($i + 1) . '.jpg" width="180px; margin-right:10px;"/></td></tr>';
+            $html .= '<tr><td colspan="2" style="text-align:left; padding: 10px 0;"><img src="' . PITCHPRINT_PREVIEWS_BASE . $project_id . '_' . ($i + 1) . '.jpg" style="width:180px; margin-right:10px;"/></td></tr>';
         }
 
         $include_download_link = get_option('ppa_email_download_link') === 'on';
