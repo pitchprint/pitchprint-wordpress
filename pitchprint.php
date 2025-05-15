@@ -5,7 +5,7 @@
 * 	Plugin URI: 			https://pitchprint.com
 * 	Description: 			A beautiful web based print customization app for your online store. Integrates with WooCommerce.
 * 	Author: 				PitchPrint, Inc.
-* 	Version: 				11.0.8
+* 	Version: 				11.0.9
 * 	Author URI: 			https://pitchprint.com
 * 	Requires at least: 		3.8
 * 	Tested up to: 			6.8
@@ -46,7 +46,7 @@
 			 * 	PitchPrint version.
 			 * 	@var string
 			*/
-			public $version = '11.0.8';
+			public $version = '11.0.9';
 
 			/**
 			 * 	The single instance of the class.
