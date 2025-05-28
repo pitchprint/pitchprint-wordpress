@@ -98,15 +98,9 @@
 
 	function handle_new_order( $order_id, $order ) {
 		$items = $order->get_items();
+		$should_update_user_id = false;
 		$project_ids = [];
-		
-		$user_data = [
-            'id' => $order->get_user_id(),
-            'first_name' => $order->get_billing_first_name(),
-            'last_name' => $order->get_billing_last_name(),
-            'email' => $order->get_billing_email(),
-			'info' => 'Order Id: ' . $order_id,
-        ];
+		$user_id = $order->get_user_id();
 	
 		foreach ( $items as $item ) {
 			foreach ( $item->get_meta_data() as $meta ) {
@@ -118,26 +112,45 @@
 					}
 
 					if ( !empty($pitchprint_customization['projectId']) ) {
+						if ( $user_id && $pitchprint_customization['userId'] === 'guest' ) {
+							$should_update_user_id = true;
+						}
 						$project_ids[] = $pitchprint_customization['projectId'];
 					}
 				}
 			}
 		}
 
-		if (count($project_ids)) {
-			$auth_key = 'Bearer ' . get_option('print_app_secret_key');
-
-			$response = wp_remote_post(PITCHPRINT_UPDATE_ORDER_ENDPOINT, [
+		if ( count($project_ids) ) {
+			$auth_key = get_option( 'ppa_secret_key' );
+			// Append order ID
+			$response1 = wp_remote_post( 'https://api.pitchprint.com/runtime/append-project-order-id', [
 				'headers' => [ 'Authorization' => $auth_key ],
-				'body'    => json_encode([
+				'body'    => json_encode( [
 					'projectIds' => $project_ids,
-					'user'     => $user_data,
-				]),
+					'orderId'    => $order_id,
+				] ),
 				'method'  => 'POST',
-			]);
+			] );
 
 			if ( is_wp_error( $response1 ) || wp_remote_retrieve_response_code( $response1 ) !== 200 ) {
-				error_log( '[PitchPrint] Failed to append order ID to projects: ' . print_r( $response, true ) );
+				error_log( '[PitchPrint] Failed to append order ID to projects: ' . print_r( $response1, true ) );
+			}
+	
+			// Append user ID if needed
+			if ( $should_update_user_id ) {
+				$response2 = wp_remote_post( 'https://api.pitchprint.com/runtime/append-project-user-id', [
+					'headers' => [ 'Authorization' => $auth_key ],
+					'body'    => json_encode( [
+						'projectIds' => $project_ids,
+						'userId'     => $user_id,
+					] ),
+					'method'  => 'POST',
+				] );
+
+				if ( is_wp_error( $response2 ) || wp_remote_retrieve_response_code( $response2 ) !== 200 ) {
+					error_log( '[PitchPrint] Failed to append user ID to projects: ' . print_r( $response2, true ) );
+				}
 			}
 		}
 	}
