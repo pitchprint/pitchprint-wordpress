@@ -189,6 +189,7 @@
 			foreach ($products as $item_key => $item_values) {
 				$item_data = $item_values->get_data();
 				$pprint = null;
+				
 				foreach ($item_values->get_meta_data() as $meta) {
 					if ($meta->key === PITCHPRINT_CUSTOMIZATION_KEY) {
 						$pitchprint_customization = $meta->value;
@@ -201,11 +202,13 @@
 						break;
 					}
 				}
+
 				$items[] = array(
 					'name' => $item_data['name'],
 					'id' => $item_data['product_id'],
 					'qty' => $item_data['quantity'],
-					'pitchprint' => $pprint
+					'pitchprint' => $pprint,
+					'sku' => $item_data['sku'],
 				);
 			}
 
