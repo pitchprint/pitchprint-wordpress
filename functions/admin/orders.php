@@ -1,11 +1,17 @@
 <?php
 
 	namespace pitchprint\functions\admin;
-
 	function format_pitchprint_order_key($display_value, $meta, $order_item) {
 		
 		if ($meta->key === 'preview' || $meta->key === '_w2p_set_option') {
-			return did_action('woocommerce_email_order_details') ? '' : 'PitchPrint Customization';
+			// Check if the current request is for an email or packing slip
+			if (did_action('woocommerce_email_order_details') || 
+				did_action('wpo_wcpdf_process_template') || 
+				(isset($_GET['wpo_wcpdf_document_type']) && $_GET['wpo_wcpdf_document_type'] === 'packing-slip') ||
+				(isset($_GET['action']) && strpos($_GET['action'], 'packing') !== false)) {
+				return '';
+			}
+			return 'PitchPrint Customization';
 		}
 		return $display_value;
 	}
@@ -23,10 +29,12 @@
 			if (typeof PPADMIN.start !== 'undefined') PPADMIN.start();
 		");
 	}
-
 	function format_pitchprint_order_value($formatted_meta, $order_item) {
-		// Check if the current request is for an email
-		if (did_action('woocommerce_email_order_details')) {
+		// Check if the current request is for an email or packing slip
+		if (did_action('woocommerce_email_order_details') || 
+			did_action('wpo_wcpdf_process_template') || 
+			(isset($_GET['wpo_wcpdf_document_type']) && $_GET['wpo_wcpdf_document_type'] === 'packing-slip') ||
+			(isset($_GET['action']) && strpos($_GET['action'], 'packing') !== false)) {
 			return $formatted_meta;
 		}
 
