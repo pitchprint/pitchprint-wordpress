@@ -5,12 +5,21 @@
 	use pitchprint\functions\general as General;
 
 	function customize_button() {
+		// Guard against duplicate execution
+		static $already_run = false;
+		if ($already_run) return;
+		$already_run = true;
+
 		global $post;
 		global $pitchprint;
 
 		$mode = 'new';
 		$now_value = '';
 		$set_option = get_post_meta( $post->ID, '_w2p_set_option', true );
+		
+		// Exit if no PitchPrint design configured for this product
+		if (empty($set_option)) return;
+		
 		$display_option = get_post_meta( $post->ID, '_w2p_display_option', true );
 		$customization_required = get_post_meta( $post->ID, '_w2p_required_option', true );
 		$pdf_download = get_post_meta( $post->ID, '_w2p_pdf_download_option', true );

@@ -1,3 +1,7 @@
+== 11.1.0 =
+Fixed an issue where the editor class is duplicated when a variable product is set
+Fixed issue with the Stripe Button clearing the customization session before customer adds to cart
+
 == 11.0.1 =
 Minor release update
 

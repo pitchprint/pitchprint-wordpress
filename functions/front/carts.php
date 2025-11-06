@@ -10,7 +10,11 @@
 
         if (isset($value) && $value !== FALSE) {
             $cart_item_data[PITCHPRINT_CUSTOMIZATION_KEY] = $value;
-            General\delete_customization_data($product_id);
+            
+            // Only delete if we're actually adding to cart (not just checking)
+            if (doing_action('woocommerce_add_to_cart')) {
+                General\delete_customization_data($product_id);
+            }
         }
 
         return $cart_item_data;
