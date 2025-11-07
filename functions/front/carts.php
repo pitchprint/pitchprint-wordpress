@@ -11,8 +11,10 @@
         if (isset($value) && $value !== FALSE) {
             $cart_item_data[PITCHPRINT_CUSTOMIZATION_KEY] = $value;
             
-            // Only delete if we're actually adding to cart (not just checking)
-            if (doing_action('woocommerce_add_to_cart')) {
+            // Don't delete during cart simulation or validation checks
+            $is_simulation = isset($_GET['wc-ajax']) && $_GET['wc-ajax'] === 'ppc-simulate-cart';
+            
+            if (!$is_simulation) {
                 General\delete_customization_data($product_id);
             }
         }
