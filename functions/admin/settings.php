@@ -46,10 +46,14 @@ function settings_api_init() {
 
     // Register settings with sanitization callbacks
     register_setting('pitchprint', 'ppa_api_key', [
-        'sanitize_callback' => 'sanitize_text_field'
+        'sanitize_callback' => function($value) {
+            return trim($value);
+        }
     ]);
     register_setting('pitchprint', 'ppa_secret_key', [
-        'sanitize_callback' => 'sanitize_text_field'
+        'sanitize_callback' => function($value) {
+            return trim($value);
+        }
     ]);
     register_setting('pitchprint', 'ppa_cat_customize', [
         'sanitize_callback' => 'sanitize_text_field'

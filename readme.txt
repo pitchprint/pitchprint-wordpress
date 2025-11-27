@@ -3,7 +3,7 @@ Contributors: pitchprint
 Tags: customizer, photo album, print shop, web2print, gift print, diy print, product customizer, web-to-print, print software, print solution, HTML5 WYSIWYG, t-shirt designer, wysiwyg print editor, business card
 Requires at least: 3.8
 Tested up to: 6.8
-Stable tag: 11.1.1
+Stable tag: 11.1.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -171,6 +171,9 @@ Check out our [website for more details](https://pitchprint.com)
 10. Photo Print
 
 == Changelog ==
+
+== 11.1.2 =
+Minor fix to Refactor sanitization callbacks for API key and secret key to only trim whitespace
 
 == 11.1.1 =
 Minor fix to skip clearing customization if the call is an ajax with `ppc-simulate-cart`
