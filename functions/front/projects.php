@@ -5,13 +5,7 @@
     use pitchprint\functions\general as General;
 
     function save_project_sess() {
-
-        if (isset($_POST['nonce'])) {
-            if (!wp_verify_nonce($_POST['nonce'], 'pitchprint_project_nonce')) {
-                wp_send_json_error('Security check failed.');
-            }
-        }
-
+        
         if (!isset($_POST['productId']) || empty($_POST['productId'])) {
             wp_send_json_error('No product ID provided');
         }
@@ -40,12 +34,6 @@
     }
 
     function reset_project_sess() {
-
-        if (isset($_POST['nonce'])) {
-            if (!wp_verify_nonce($_POST['nonce'], 'pitchprint_project_nonce')) {
-                wp_send_json_error('Security check failed.');
-            }
-        }
 
         if (!isset($_POST['productId']) || empty($_POST['productId'])) {
             wp_send_json_error('No product ID provided.');

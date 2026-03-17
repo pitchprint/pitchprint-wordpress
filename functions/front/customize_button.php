@@ -74,7 +74,6 @@
 				if (typeof PitchPrintClient === 'undefined') return;
 				window.ppclient = new PitchPrintClient({
 					adminUrl: '" . admin_url('admin-ajax.php') ."',
-					nonce: '" . wp_create_nonce('pitchprint_project_nonce') . "',
 					displayMode: '{$display_option}',
 					customizationRequired: {$customization_required},
 					pdfDownload: {$pdf_download},

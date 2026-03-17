@@ -174,7 +174,6 @@ Check out our [website for more details](https://pitchprint.com)
 
 == 11.3.0 =
 Improved user identification for customization data isolation
-Added nonce verification to AJAX endpoints
 Improved session handling reliability
 Replaced deprecated wc_enqueue_js with wp_add_inline_script
 
