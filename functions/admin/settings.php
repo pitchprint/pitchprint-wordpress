@@ -43,6 +43,13 @@ function settings_api_init() {
         'pitchprint',
         'ppa_settings_section'
     );
+    add_settings_field(
+        'ppa_disable_session',
+        __('Disable Session Backup', 'PitchPrint'),
+        'pitchprint\\functions\\admin\\ppa_disable_session',
+        'pitchprint',
+        'ppa_settings_section'
+    );
 
     // Register settings with sanitization callbacks
     register_setting('pitchprint', 'ppa_api_key', [
@@ -59,6 +66,9 @@ function settings_api_init() {
         'sanitize_callback' => 'sanitize_text_field'
     ]);
     register_setting('pitchprint', 'ppa_email_download_link', [
+        'sanitize_callback' => 'sanitize_text_field'
+    ]);
+    register_setting('pitchprint', 'ppa_disable_session', [
         'sanitize_callback' => 'sanitize_text_field'
     ]);
 }
@@ -83,6 +93,12 @@ function ppa_email_download_link() {
     $checked = checked(get_option('ppa_email_download_link'), 'on', false);
     echo '<input id="ppa_email_download_link" name="ppa_email_download_link" type="checkbox" ' . $checked . ' />';
     echo '<label for="ppa_email_download_link">' . __('Include PDF Link in Customer Email', 'PitchPrint') . '</label>';
+}
+
+function ppa_disable_session() {
+    $checked = checked(get_option('ppa_disable_session'), 'on', false);
+    echo '<input id="ppa_disable_session" name="ppa_disable_session" type="checkbox" ' . $checked . ' />';
+    echo '<label for="ppa_disable_session">' . __('Disable PHP session backup (enable this if your host uses Batcache or similar page caching)', 'PitchPrint') . '</label>';
 }
 
 function add_settings_link($links) {

@@ -21,13 +21,16 @@
 
 		$cred = \pitchprint\functions\general\fetch_credentials();
 		wp_enqueue_script('pitchprint_admin', 'https://pitchprint.io/rsc/js/a.wp.js');
-		wc_enqueue_js( "var PPADMIN = window.PPADMIN; if (typeof PPADMIN === 'undefined') window.PPADMIN = PPADMIN = { version: '9.0.0', readyFncs: [] };" . "
+		$pp_inline_js = "var PPADMIN = window.PPADMIN; if (typeof PPADMIN === 'undefined') window.PPADMIN = PPADMIN = { version: '9.0.0', readyFncs: [] };" . "
 			PPADMIN.vars = {
 				credentials: { timestamp: '" . $cred['timestamp'] . "', apiKey: '" . get_option('ppa_api_key') . "', signature: '" . $cred['signature'] . "'}
 			};
 			PPADMIN.readyFncs.push('init');
 			if (typeof PPADMIN.start !== 'undefined') PPADMIN.start();
-		");
+		";
+		wp_register_script('pitchprint-admin-order', '', array(), false, true);
+		wp_enqueue_script('pitchprint-admin-order');
+		wp_add_inline_script('pitchprint-admin-order', $pp_inline_js);
 	}
 	function format_pitchprint_order_value($formatted_meta, $order_item) {
 		// Check if the current request is for an email or packing slip

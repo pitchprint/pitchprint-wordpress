@@ -3,7 +3,7 @@ Contributors: pitchprint
 Tags: customizer, photo album, print shop, web2print, gift print, diy print, product customizer, web-to-print, print software, print solution, HTML5 WYSIWYG, t-shirt designer, wysiwyg print editor, business card
 Requires at least: 3.8
 Tested up to: 6.8
-Stable tag: 11.2.0
+Stable tag: 11.3.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -171,6 +171,12 @@ Check out our [website for more details](https://pitchprint.com)
 10. Photo Print
 
 == Changelog ==
+
+== 11.3.0 =
+Improved user identification for customization data isolation
+Added nonce verification to AJAX endpoints
+Improved session handling reliability
+Replaced deprecated wc_enqueue_js with wp_add_inline_script
 
 == 11.2.0 =
 Fixed a vulnerability issue confined to uploads the plugin folder

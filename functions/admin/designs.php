@@ -88,14 +88,17 @@
 		echo '</div>';
 		
 		$credentials = \pitchprint\functions\general\fetch_credentials();
-		wc_enqueue_js( PITCHPRINT_ADMIN_DEF . "
+		$pp_inline_js = PITCHPRINT_ADMIN_DEF . "
 			PPADMIN.vars = {
 				credentials: { timestamp: '" . $credentials['timestamp'] . "', apiKey: '" . get_option('ppa_api_key') . "', signature: '" . $credentials['signature'] . "'},
 				selectedOption: '{$ppa_selected_option[0]}'
 			};
 			PPADMIN.readyFncs.push('init', 'fetchDesigns');
 			if (typeof PPADMIN.start !== 'undefined') PPADMIN.start();
-		");
+		";
+		wp_register_script('pitchprint-admin-designs', '', array(), false, true);
+		wp_enqueue_script('pitchprint-admin-designs');
+		wp_add_inline_script('pitchprint-admin-designs', $pp_inline_js);
 
 	}
 

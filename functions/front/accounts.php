@@ -12,7 +12,7 @@
         wp_enqueue_style('woocommerce_prettyPhoto_css', $woocommerce->plugin_url() . '/assets/css/prettyPhoto.css' );
         
         echo '<div id="pp_mydesigns_div"></div>';
-        wc_enqueue_js("
+        $pp_inline_js = "
             ajaxsearch = undefined;
             (function(_doc) {
                 if (typeof PitchPrintClient === 'undefined') return;
@@ -27,6 +27,9 @@
                     adminUrl: '" . admin_url( 'admin-ajax.php' ) ."',
                     isCheckoutPage: " . (is_checkout() ? 'true' : 'false') . "
                 });
-            })(document);");
+            })(document);";
+        wp_register_script('pitchprint-account-init', '', array(), false, true);
+        wp_enqueue_script('pitchprint-account-init');
+        wp_add_inline_script('pitchprint-account-init', $pp_inline_js);
     }
     

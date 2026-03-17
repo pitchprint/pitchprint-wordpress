@@ -68,12 +68,13 @@
 		$design_id = apply_filters('set_pitchprint_design_id', $design_id);
 		$upload_path = file_exists(ABSPATH . 'pitchprint/uploader') ? 'pitchprint/uploader/' : 'wp-content/plugins/pitchprint/uploader/';
 
-		wc_enqueue_js("
+		$pp_inline_js = "
 			ajaxsearch = undefined;
 			(function(_doc) {
 				if (typeof PitchPrintClient === 'undefined') return;
 				window.ppclient = new PitchPrintClient({
 					adminUrl: '" . admin_url('admin-ajax.php') ."',
+					nonce: '" . wp_create_nonce('pitchprint_project_nonce') . "',
 					displayMode: '{$display_option}',
 					customizationRequired: {$customization_required},
 					pdfDownload: {$pdf_download},
@@ -99,7 +100,10 @@
 					userData: {$user_data},
 					ppValue: '{$now_value}',
 				});
-			})(document);");
+			})(document);";
+		wp_register_script('pitchprint-product-init', '', array(), false, true);
+		wp_enqueue_script('pitchprint-product-init');
+		wp_add_inline_script('pitchprint-product-init', $pp_inline_js);
 
 		echo '<input type="hidden" id="_w2p_set_option" name="_w2p_set_option" value="' . $now_value . '" />
 				<div id="pp_main_btn_sec" class="ppc-main-btn-sec" ></div>';

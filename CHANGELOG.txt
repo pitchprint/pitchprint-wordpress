@@ -1,3 +1,10 @@
+== 11.3.0 =
+Fixed an issue where customers could see each other's customization data
+Improved user identification for customization data isolation
+Added nonce verification to AJAX endpoints
+Improved session handling reliability
+Replaced deprecated wc_enqueue_js with wp_add_inline_script
+
 == 11.2.0 =
 Fixed a vulnerability issue confined to uploads the plugin folder
 
